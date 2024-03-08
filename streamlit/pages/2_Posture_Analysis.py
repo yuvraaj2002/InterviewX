@@ -21,14 +21,19 @@ st.markdown(
 mp_drawing = mp.solutions.drawing_utils
 mp_pose = mp.solutions.pose
 
-def process_video(file_path, skip_count=2):
 
+def process_video(file_path, skip_count=2):
     # Decode video bytes into frames
     cap = cv2.VideoCapture(file_path)
 
-    with mp_pose.Pose(min_detection_confidence=0.8, min_tracking_confidence=0.8) as pose:
+    with mp_pose.Pose(
+        min_detection_confidence=0.8, min_tracking_confidence=0.8
+    ) as pose:
         frame_count = 0
         skip_count = 2  # Number of frames to skip between processing
+
+        # Create a placeholder for the image
+        image_placeholder = st.empty()
 
         while cap.isOpened():
             ret, frame = cap.read()
@@ -51,23 +56,28 @@ def process_video(file_path, skip_count=2):
                         image,
                         results.pose_landmarks,
                         mp_pose.POSE_CONNECTIONS,
-                        mp_drawing.DrawingSpec(color=(245, 117, 66), thickness=2, circle_radius=2),
-                        mp_drawing.DrawingSpec(color=(245, 66, 230), thickness=2, circle_radius=2),
+                        mp_drawing.DrawingSpec(
+                            color=(245, 117, 66), thickness=2, circle_radius=2
+                        ),
+                        mp_drawing.DrawingSpec(
+                            color=(245, 66, 230), thickness=2, circle_radius=2
+                        ),
                     )
                 except:
                     pass
 
                 # Display the processed frame
-                st.image(image, channels="RGB")
+                image_placeholder.image(image, channels="RGB")
 
             frame_count += 1
 
-            if cv2.waitKey(1) & 0xFF == ord('q'):
+            if cv2.waitKey(1) & 0xFF == ord("q"):
                 break
 
         # Release resources
         cap.release()
         cv2.destroyAllWindows()
+
 
 def posture_analysis_page():
     st.markdown(
@@ -79,13 +89,15 @@ def posture_analysis_page():
         unsafe_allow_html=True,
     )
 
-    input_col, configuration_col = st.columns(spec=(2, 1.5), gap="large")
+    input_col, configuration_col = st.columns(spec=(2, 1.7), gap="large")
     with input_col:
         pass
 
+    temp_file_path = None  # Initialize temp_file_path outside the if block
+
     with configuration_col:
         video = st.file_uploader("Upload the video")
-        analyze_video = st.button("Analyze",use_container_width=True)
+        analyze_video = st.button("Analyze", use_container_width=True)
         if video is not None and analyze_video:
             video_bytes = video.read()
 
@@ -94,10 +106,12 @@ def posture_analysis_page():
                 temp_file.write(video_bytes)
                 temp_file_path = temp_file.name
 
-            process_video(temp_file_path)
+            with input_col:
+                process_video(temp_file_path)
 
-            # Remove the temporary file after processing
-            os.unlink(temp_file_path)
+            # Remove the temporary file after processing if temp_file_path is defined
+            if temp_file_path:
+                os.unlink(temp_file_path)
 
         row = st.columns(4)
         index = 0
@@ -125,6 +139,8 @@ def posture_analysis_page():
                 "Play processed video", use_container_width=True
             )
             if processed_video:
+                with input_col:
+                    st.video("output/processed_video.mp4")
                 st.info("Click 'Analyze' to display processed frames.")
             st.button("Download processed video", use_container_width=True)
 
