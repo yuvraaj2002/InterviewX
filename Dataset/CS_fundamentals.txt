@@ -1,0 +1,300 @@
+    What is the purpose of an operating system?
+    Explain the difference between a process and a thread.
+    How does virtual memory work in an operating system?
+    What is the role of the kernel in an operating system?
+    Define deadlock in the context of operating systems.
+    Explain the concept of a file system.
+    What is the difference between multiprogramming and multitasking?
+    How does a context switch occur in an operating system?
+    Describe the main functions of an operating system.
+    What is the purpose of the scheduler in an operating system?
+    Explain the concept of process synchronization.
+    What is the role of a device driver in an operating system?
+    Differentiate between monolithic and microkernel operating systems.
+    How does paging contribute to memory management in operating systems?
+    Define a semaphore in the context of operating systems.
+    Explain the concept of virtualization.
+    What is the purpose of an interrupt in an operating system?
+    Describe the working of a demand-paging system.
+    How does a file allocation table (FAT) work in file systems?
+    What is the significance of the page table in virtual memory management?
+    Explain the difference between preemptive and non-preemptive scheduling.
+    How does the LRU (Least Recently Used) algorithm work in page replacement?
+    Define thrashing and explain how it can be prevented in operating systems.
+    What is a zombie process in the context of operating systems?
+    Explain the role of system calls in an operating system.
+    Describe the purpose of the page fault handler in virtual memory.
+    How does the dining philosophers problem illustrate synchronization issues?
+    What is a critical section in the context of process synchronization?
+    Explain the concept of a spin lock in operating systems.
+    How do segmentation and paging work together in memory management?
+    Define a system call and provide examples of common system calls.
+    Explain the purpose of a page replacement algorithm.
+    What is the role of the page table in virtual memory?
+    Differentiate between internal and external fragmentation in memory allocation.
+    How does the buddy system work in memory allocation?
+    Explain the concept of mutual exclusion in the context of process synchronization.
+    Describe the purpose of a buffer cache in an operating system.
+    What is a process control block (PCB) in operating systems?
+    How does the Banker's algorithm prevent deadlock in resource allocation?
+    Explain the concept of a trap in operating systems.
+    What is the purpose of the FAT (File Allocation Table) in file systems?
+    How does the C-LOOK disk scheduling algorithm work?
+    Define the term "starvation" in the context of process scheduling.
+    Explain the difference between a mutex and a semaphore.
+    How does the buddy system help in memory allocation?
+    What is the purpose of the TLB (Translation Lookaside Buffer) in virtual memory?
+    Explain the role of the I/O scheduler in an operating system.
+    Define a kernel panic and describe its implications.
+    How does a system call differ from a normal function call?
+    Explain the purpose of the page replacement policy.
+    Describe the functionality of the FAT32 file system.
+    What is the role of the inode in Unix-like file systems?
+    Explain the concept of a real-time operating system.
+    How does the aging algorithm work in page replacement?
+    Define the concept of "working set" in memory management.
+    What is the purpose of the swap space in virtual memory?
+    Explain the difference between voluntary and involuntary context switches.
+    Describe the purpose of a system image in an operating system.
+    How does the elevator algorithm work in disk scheduling?
+    Define the terms "thrashing" and "working set" in memory management.
+    Explain the concept of a thread pool in operating systems.
+    How does the C-SCAN disk scheduling algorithm differ from the SCAN algorithm?
+    Describe the purpose of a file descriptor in Unix-like operating systems.
+    What is the role of the CPU scheduler in an operating system?
+    Explain the purpose of a dirty bit in page tables.
+    How does the B-Tree file organization enhance file system performance?
+    Define the term "context switch overhead" in operating systems.
+    Describe the purpose of a FAT16 file system.
+    Explain the role of a file handle in file systems.
+    How does the Round Robin scheduling algorithm work?
+    Define the concept of a process state in an operating system.
+    Explain the purpose of a swap space in virtual memory.
+    Describe the role of the Master File Table (MFT) in NTFS file systems.
+    What is the significance of the I/O-bound and CPU-bound processes in scheduling?
+    How does the LRU-K algorithm enhance the traditional LRU algorithm?
+    Define the term "context switch" in operating systems.
+    Explain the purpose of the page fault handler in virtual memory management.
+    Describe the functionality of the Superblock in Unix-like file systems.
+    What is the role of the Logical Address Space in memory management?
+    How does the Aging algorithm improve the performance of page replacement?
+    Define the concept of a race condition in concurrent programming.
+    Explain the purpose of the swap space in the Linux operating system.
+    Describe the working of the Bounded-Buffer Problem in process synchronization.
+    What is the role of the page fault in virtual memory systems?
+    Explain the concept of a pipe in Unix-like operating systems.
+    How does the Working Set Model contribute to page replacement policies?
+    Define the term "multithreading" in the context of operating systems.
+    Describe the role of the Inverted Page Table in virtual memory.
+    What is the purpose of a process address space in an operating system?
+    Explain the concept of a dirty page in virtual memory systems.
+    How does the FIFO (First-In-First-Out) algorithm work in page replacement?
+    Define the terms "process" and "thread" in the context of operating systems.
+    Describe the purpose of a logical file system.
+    What is the role of the PCB (Process Control Block) in process management?
+    Explain the concept of a real-time clock in operating systems.
+    How does the Multilevel Queue scheduling algorithm work?
+    Define the term "resident set" in memory management.
+    Describe the purpose of a shadow page table in virtual memory.
+    What is the significance of the Critical Section Problem in process synchronization?
+    Explain the concept of a semaphore and its use in process synchronization.
+        What is the OSI model, and what are its seven layers?
+    Define the term "subnetting" in computer networking.
+    Explain the difference between TCP and UDP.
+    What is the purpose of ARP (Address Resolution Protocol)?
+    Describe the functionality of a router in a computer network.
+    How does NAT (Network Address Translation) work?
+    Define the term "bandwidth" in the context of computer networks.
+    What is the purpose of DNS (Domain Name System)?
+    Explain the concept of a MAC address in networking.
+    How does DHCP (Dynamic Host Configuration Protocol) assign IP addresses?
+    Define the term "firewall" in the context of computer networks.
+    Describe the purpose of ICMP (Internet Control Message Protocol).
+    What is the difference between a hub and a switch in networking?
+    Explain the role of a proxy server in computer networks.
+    Define the terms "half-duplex" and "full-duplex" in networking.
+    How does a VLAN (Virtual Local Area Network) work?
+    What is the purpose of a subnet mask in IP addressing?
+    Explain the concept of a gateway in networking.
+    Describe the functionality of the OSI model's Data Link layer.
+    How does a proxy server enhance network security?
+    Define the term "IPv6" and explain its advantages over IPv4.
+    What is the purpose of QoS (Quality of Service) in networking?
+    Explain the concept of a broadcast domain in networking.
+    How does a DNS resolver resolve domain names to IP addresses?
+    Define the terms "unicast," "broadcast," and "multicast" in networking.
+    Describe the functionality of the OSI model's Physical layer.
+    What is the purpose of a network gateway?
+    Explain the concept of a hub in networking.
+    How does a network switch differ from a network hub?
+    Define the term "subnet mask" in IP addressing.
+    What is the purpose of a DNS cache?
+    Explain the concept of a default gateway in networking.
+    How does a bridge differ from a router in computer networking?
+    Define the term "network latency" and explain its significance.
+    What is the purpose of a proxy server in a corporate network?
+    Describe the functionality of the OSI model's Network layer.
+    Explain the concept of a broadcast storm in networking.
+    How does a DHCP relay agent function in a network?
+    Define the term "TCP handshake" and describe its steps.
+    What is the purpose of the OSI model's Presentation layer?
+    Explain the role of a network firewall in cybersecurity.
+    How does a load balancer improve the performance of a web server?
+    Define the term "subnet" in networking.
+    What is the purpose of the OSI model's Session layer?
+    Describe the functionality of the OSI model's Transport layer.
+    Explain the concept of a virtual IP address.
+    How does a DNS resolver avoid repetitive domain name resolution requests?
+    Define the terms "caching" and "forwarding" in DNS.
+    What is the purpose of the OSI model's Application layer?
+    Explain the concept of a DMZ (Demilitarized Zone) in networking.
+    How does a network address translation (NAT) device improve security?
+    Define the term "traceroute" and explain its use in networking.
+    What is the purpose of a reverse proxy server?
+    Describe the functionality of the OSI model's Transport layer.
+    Explain the concept of a TCP three-way handshake.
+    How does a DNS server handle recursive and iterative queries?
+    Define the term "routing table" in networking.
+    What is the purpose of the OSI model's Presentation layer?
+    Explain the concept of a subnet mask in IPv4 addressing.
+    How does a DHCP server lease IP addresses to client devices?
+    Define the term "jitter" in the context of network performance.
+    What is the purpose of the OSI model's Session layer?
+    Explain the concept of a subnet in networking.
+    How does a network switch improve network performance?
+    Define the term "ping" and explain its use in networking.
+    What is the purpose of the OSI model's Data Link layer?
+    Explain the concept of a unicast communication in networking.
+    How does a network switch differ from a network router?
+    Define the term "IP address" and explain its structure.
+    What is the purpose of the OSI model's Physical layer?
+    Describe the functionality of the OSI model's Network layer.
+    Explain the concept of a broadcast domain in networking.
+    How does a VLAN (Virtual Local Area Network) enhance network efficiency?
+    Define the term "subnet mask" in IP addressing.
+    What is the purpose of the OSI model's Transport layer?
+    Explain the concept of a network gateway.
+    How does a router function in a computer network?
+    Define the term "TCP/IP" and explain its significance.
+    What is the purpose of the OSI model's Application layer?
+    Describe the functionality of the OSI model's Presentation layer.
+    Explain the concept of a network protocol.
+    How does a proxy server enhance network security?
+    Define the term "firewall" and explain its role in network security.
+    What is the purpose of a DNS resolver in networking?
+    Explain the concept of a DNS cache poisoning attack.
+    How does a load balancer distribute incoming network traffic?
+    Define the term "subnetting" and explain its benefits in IP addressing.
+    What is the purpose of a DHCP server in a network?
+    Explain the role of a network switch in a LAN (Local Area Network).
+    How does a VLAN (Virtual Local Area Network) improve network organization?
+    Define the term "subnet mask" in IP addressing.
+    What is the purpose of the OSI model's Network layer?
+    Explain the concept of a routing table.
+    How does a router function in a computer network?
+    Define the term "TCP handshake" and describe its steps.
+    What is the purpose of the OSI model's Transport layer?
+    Explain the concept of a broadcast storm in networking.
+    How does a switch differ from a hub in a computer network?
+    Define the term "network latency" and explain its significance.
+    What is the purpose of the OSI model's Data Link layer?
+        What is the purpose of a database management system (DBMS)?
+    Define the term "relational database."
+    Explain the difference between SQL and NoSQL databases.
+    What is the role of a primary key in a database table?
+    Describe the concept of database normalization.
+    How does indexing improve database performance?
+    Define the term "ACID properties" in the context of databases.
+    Explain the purpose of a foreign key in a relational database.
+    What is the significance of the SELECT statement in SQL?
+    Describe the concept of a database transaction.
+    How does denormalization differ from normalization in databases?
+    Define the term "database schema" and explain its components.
+    Explain the purpose of the GROUP BY clause in SQL.
+    What is the role of the WHERE clause in a database query?
+    Describe the concept of database views.
+    How does the JOIN operation work in SQL databases?
+    Define the term "database index" and explain its types.
+    Explain the concept of database replication.
+    What is the purpose of the COMMIT statement in database transactions?
+    Describe the difference between a clustered and a non-clustered index.
+    Define the term "data integrity" in the context of databases.
+    Explain the role of the INSERT statement in SQL.
+    What is the significance of the SQL ORDER BY clause?
+    Describe the purpose of the DELETE statement in SQL.
+    How does a stored procedure differ from a function in databases?
+    Define the term "database trigger" and explain its use.
+    Explain the concept of database normalization and its benefits.
+    What is the purpose of the SQL UPDATE statement?
+    Describe the concept of database constraints.
+    How does the SQL GROUP BY clause work?
+    Define the term "database view" and explain its advantages.
+    Explain the difference between a primary key and a unique key in databases.
+    What is the significance of the SQL HAVING clause?
+    Describe the concept of database denormalization.
+    How does the SQL JOIN operation work?
+    Define the term "database index" and explain its role.
+    Explain the purpose of the SQL WHERE clause in queries.
+    What is the role of the COMMIT and ROLLBACK statements in database transactions?
+    Describe the difference between an inner join and an outer join in SQL.
+    Define the term "database replication" and explain its benefits.
+    Explain the concept of database normalization and its drawbacks.
+    What is the purpose of the SQL SELECT statement in queries?
+    Describe the concept of referential integrity in databases.
+    How does the SQL GROUP BY clause aggregate data in queries?
+    Define the term "database schema" and explain its components.
+    Explain the concept of database triggers and their use cases.
+    What is the role of the SQL INSERT statement in databases?
+    Describe the difference between a candidate key and a foreign key in databases.
+    How does the SQL ORDER BY clause sort query results?
+    Define the term "database constraint" and explain its types.
+    Explain the purpose of the SQL DELETE statement.
+    What is the significance of the SQL DISTINCT keyword in queries?
+    Describe the concept of database views and their advantages.
+    How does the SQL UPDATE statement modify data in a database?
+    Define the term "ACID properties" in the context of database transactions.
+    Explain the concept of database normalization and its goals.
+    What is the role of the SQL JOIN operation in combining tables?
+    Describe the purpose of the SQL WHERE clause in queries.
+    How does the SQL GROUP BY clause aggregate data in queries?
+    Define the term "database index" and explain its types.
+    Explain the concept of database replication and its advantages.
+    What is the significance of the SQL ORDER BY clause in queries?
+    Describe the concept of database triggers and their use cases.
+    How does the SQL DISTINCT keyword work in query results?
+    Define the term "database schema" and explain its components.
+    Explain the purpose of the SQL SELECT statement in queries.
+    What is the role of the SQL INSERT statement in databases?
+    Describe the difference between a primary key and a unique key in databases.
+    How does the SQL DELETE statement remove data from a database?
+    Define the term "database constraint" and explain its types.
+    Explain the concept of database normalization and its goals.
+    What is the significance of the SQL HAVING clause in queries?
+    Describe the concept of database denormalization and its benefits.
+    How does the SQL JOIN operation combine data from multiple tables?
+    Define the term "database view" and explain its advantages.
+    Explain the purpose of the SQL UPDATE statement in databases.
+    What is the role of the SQL DISTINCT keyword in query results?
+    Describe the concept of referential integrity in databases.
+    How does the SQL GROUP BY clause work in aggregating data?
+    Define the term "database replication" and explain its benefits.
+    Explain the concept of database normalization and its drawbacks.
+    What is the purpose of the SQL WHERE clause in database queries?
+    Describe the difference between a candidate key and a composite key in databases.
+    How does the SQL ORDER BY clause sort query results in ascending and descending order?
+    Define the term "database constraint" and explain its role in ensuring data integrity.
+    Explain the concept of database triggers and their use in enforcing business rules.
+    What is the significance of the SQL SELECT statement in retrieving data from a database?
+    Describe the concept of database views and their role in simplifying complex queries.
+    How does the SQL DELETE statement remove data from a database table?
+    Define the term "ACID properties" in the context of database transactions.
+    Explain the purpose of the SQL JOIN operation in combining data from multiple tables.
+    What is the role of the SQL GROUP BY clause in aggregating and summarizing data?
+    Describe the concept of database normalization and its importance in designing efficient databases.
+    How does the SQL UPDATE statement modify existing data in a database table?
+    Define the term "database index" and explain how it enhances the performance of database queries.
+    Explain the concept of database replication and its use in achieving high availability and fault tolerance.
+    What is the purpose of the SQL DISTINCT keyword in eliminating duplicate rows from query results?
+    Describe the difference between a primary key and a foreign key in the context of relational databases.
+    How does the SQL ORDER BY clause work in sorting query results based on one or more columns?
+    Define the term "database schema" and explain its role in organizing and structuring database objects.
