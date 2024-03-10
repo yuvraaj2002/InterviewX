@@ -22,13 +22,6 @@ st.markdown(
 mp_drawing = mp.solutions.drawing_utils
 mp_pose = mp.solutions.pose
 
-# Initialize lists to store left-shoulder, right-shoulder, shoulder, right-elbow-hand, left-elbow-hand
-angles_lse = []
-angles_rse = []
-angles_shoulders = []
-angles_rew = []
-angles_lew = []
-
 
 def angle_between_points(p1, p2):
     """
@@ -53,8 +46,8 @@ def angle_between_points(p1, p2):
     dot_product = x1 * x2 + y1 * y2 + z1 * z2
 
     # Calculate the magnitude of each vector
-    magnitude1 = math.sqrt(x1 ** 2 + y1 ** 2 + z1 ** 2)
-    magnitude2 = math.sqrt(x2 ** 2 + y2 ** 2 + z2 ** 2)
+    magnitude1 = math.sqrt(x1**2 + y1**2 + z1**2)
+    magnitude2 = math.sqrt(x2**2 + y2**2 + z2**2)
 
     # Calculate the cosine of the angle between the vectors
     cosine_angle = dot_product / (magnitude1 * magnitude2)
@@ -68,13 +61,15 @@ def angle_between_points(p1, p2):
     return angle_deg
 
 
-def process_video(file_path, skip_count=2):
-    
+def process_video(
+    file_path, angles_shoulders, angles_lse, angles_rse, angles_lew, angles_rew
+):
+
     # Decode video bytes into frames
     cap = cv2.VideoCapture(file_path)
 
     with mp_pose.Pose(
-            min_detection_confidence=0.8, min_tracking_confidence=0.8
+        min_detection_confidence=0.8, min_tracking_confidence=0.8
     ) as pose:
         frame_count = 0
         skip_count = 2  # Number of frames to skip between processing
@@ -118,8 +113,12 @@ def process_video(file_path, skip_count=2):
                         ),
                     )
                     # Retrieve left and right shoulder coordinates
-                    ls_cord = landmarks[mp.solutions.pose.PoseLandmark.LEFT_SHOULDER.value]
-                    rs_cord = landmarks[mp.solutions.pose.PoseLandmark.RIGHT_SHOULDER.value]
+                    ls_cord = landmarks[
+                        mp.solutions.pose.PoseLandmark.LEFT_SHOULDER.value
+                    ]
+                    rs_cord = landmarks[
+                        mp.solutions.pose.PoseLandmark.RIGHT_SHOULDER.value
+                    ]
 
                     le_cord = landmarks[mp_pose.PoseLandmark.LEFT_ELBOW.value]
                     re_cord = landmarks[mp_pose.PoseLandmark.RIGHT_ELBOW.value]
@@ -148,6 +147,8 @@ def process_video(file_path, skip_count=2):
         cap.release()
         cv2.destroyAllWindows()
 
+    return [angles_shoulders, angles_lse, angles_rse, angles_lew, angles_rew]
+
 
 def posture_analysis_page():
     st.markdown(
@@ -158,6 +159,13 @@ def posture_analysis_page():
         "<p style='font-size: 22px; text-align: left;padding-right: 2rem;padding-bottom: 1rem;'>In times of tough market situations, fake job postings and scams often spike, posing a significant threat to job seekers. To combat this, I've developed a user-friendly module designed to protect individuals from falling prey to such fraudulent activities. This module requires users to input details about the job posting they're considering. Behind the scenes, two powerful AI models thoroughly analyze the provided information. Once completed, users receive a clear indication of whether the job posting is is genuine or potentially decepti.</p>",
         unsafe_allow_html=True,
     )
+
+    # Initialize lists to store left-shoulder, right-shoulder, shoulder, right-elbow-hand, left-elbow-hand
+    angles_lse = []
+    angles_rse = []
+    angles_shoulders = []
+    angles_rew = []
+    angles_lew = []
 
     input_col, configuration_col = st.columns(spec=(2, 1.7), gap="large")
     with input_col:
@@ -177,13 +185,20 @@ def posture_analysis_page():
                 temp_file_path = temp_file.name
 
             with input_col:
-                process_video(temp_file_path)
+                angles_shoulders, angles_lse, angles_rse, angles_lew, angles_rew = process_video(
+                    temp_file_path,
+                    angles_shoulders,
+                    angles_lse,
+                    angles_rse,
+                    angles_lew,
+                    angles_rew,
+                )
 
             # Remove the temporary file after processing if temp_file_path is defined
             if temp_file_path:
                 os.unlink(temp_file_path)
 
-        row = st.columns(4)
+        row = st.columns(5)
         index = 0
         for col in row:
             tile = col.container(height=180)  # Adjust the height as needed
@@ -202,7 +217,9 @@ def posture_analysis_page():
                 with input_col:
                     st.video(video)
 
-            st.button("Download analysis chart", use_container_width=True)
+            analyse = st.button("Download analysis chart", use_container_width=True)
+            if analyse:
+                st.write(angles_lse)
 
         with statistics_download_col:
             processed_video = st.button(
@@ -214,5 +231,6 @@ def posture_analysis_page():
                 st.info("Click 'Analyze' to display processed frames.")
             st.button("Download processed video", use_container_width=True)
 
+        st.write(angles_shoulders)
 
 posture_analysis_page()
