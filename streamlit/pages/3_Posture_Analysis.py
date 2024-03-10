@@ -3,6 +3,7 @@ import mediapipe as mp
 import streamlit as st
 import tempfile
 import os
+import math
 
 st.markdown(
     """
@@ -21,19 +22,72 @@ st.markdown(
 mp_drawing = mp.solutions.drawing_utils
 mp_pose = mp.solutions.pose
 
+# Initialize lists to store left-shoulder, right-shoulder, shoulder, right-elbow-hand, left-elbow-hand
+angles_lse = []
+angles_rse = []
+angles_shoulders = []
+angles_rew = []
+angles_lew = []
+
+
+def angle_between_points(p1, p2):
+    """
+    Calculate the angle between two points in 3D space.
+
+    Args:
+        p1 (Point): First point, with attributes x, y, and z representing its coordinates.
+        p2 (Point): Second point, with attributes x, y, and z representing its coordinates.
+
+    Returns:
+        float: Angle between the two points in degrees.
+
+    Notes:
+        - Requires the 'math' module.
+        - The function uses the dot product of the vectors formed by the two points
+          to calculate the angle between them.
+    """
+    x1, y1, z1 = p1.x, p1.y, p1.z
+    x2, y2, z2 = p2.x, p2.y, p2.z
+
+    # Calculate the dot product of the two vectors
+    dot_product = x1 * x2 + y1 * y2 + z1 * z2
+
+    # Calculate the magnitude of each vector
+    magnitude1 = math.sqrt(x1 ** 2 + y1 ** 2 + z1 ** 2)
+    magnitude2 = math.sqrt(x2 ** 2 + y2 ** 2 + z2 ** 2)
+
+    # Calculate the cosine of the angle between the vectors
+    cosine_angle = dot_product / (magnitude1 * magnitude2)
+
+    # Use arccos to get the angle in radians
+    angle_rad = math.acos(cosine_angle)
+
+    # Convert radians to degrees
+    angle_deg = math.degrees(angle_rad)
+
+    return angle_deg
+
 
 def process_video(file_path, skip_count=2):
+    
     # Decode video bytes into frames
     cap = cv2.VideoCapture(file_path)
 
     with mp_pose.Pose(
-        min_detection_confidence=0.8, min_tracking_confidence=0.8
+            min_detection_confidence=0.8, min_tracking_confidence=0.8
     ) as pose:
         frame_count = 0
         skip_count = 2  # Number of frames to skip between processing
 
         # Create a placeholder for the image
         image_placeholder = st.empty()
+
+        # Clear the lists before starting the loop
+        angles_shoulders.clear()
+        angles_lse.clear()
+        angles_rse.clear()
+        angles_lew.clear()
+        angles_rew.clear()
 
         while cap.isOpened():
             ret, frame = cap.read()
@@ -63,6 +117,22 @@ def process_video(file_path, skip_count=2):
                             color=(245, 66, 230), thickness=2, circle_radius=2
                         ),
                     )
+                    # Retrieve left and right shoulder coordinates
+                    ls_cord = landmarks[mp.solutions.pose.PoseLandmark.LEFT_SHOULDER.value]
+                    rs_cord = landmarks[mp.solutions.pose.PoseLandmark.RIGHT_SHOULDER.value]
+
+                    le_cord = landmarks[mp_pose.PoseLandmark.LEFT_ELBOW.value]
+                    re_cord = landmarks[mp_pose.PoseLandmark.RIGHT_ELBOW.value]
+
+                    lw_cord = landmarks[mp_pose.PoseLandmark.LEFT_WRIST.value]
+                    rw_cord = landmarks[mp_pose.PoseLandmark.RIGHT_WRIST.value]
+
+                    angles_shoulders.append(angle_between_points(ls_cord, rs_cord))
+                    angles_lse.append(angle_between_points(ls_cord, le_cord))
+                    angles_rse.append(angle_between_points(rs_cord, re_cord))
+                    angles_lew.append(angle_between_points(lw_cord, re_cord))
+                    angles_rew.append(angle_between_points(rw_cord, re_cord))
+
                 except:
                     pass
 
