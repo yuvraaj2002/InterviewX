@@ -9,5 +9,8 @@ PyPDF2
 nltk
 transformers
 beautifulsoup4
+opencv-python
+mediapipe
+plotly
 
 -e .
