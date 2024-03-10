@@ -3,6 +3,7 @@ import mediapipe as mp
 import streamlit as st
 import tempfile
 import os
+import numpy as np
 import math
 
 st.markdown(
@@ -167,7 +168,7 @@ def posture_analysis_page():
     angles_rew = []
     angles_lew = []
 
-    input_col, configuration_col = st.columns(spec=(2, 1.7), gap="large")
+    input_col, configuration_col = st.columns(spec=(2, 1.9), gap="large")
     with input_col:
         pass
 
@@ -176,6 +177,7 @@ def posture_analysis_page():
     with configuration_col:
         video = st.file_uploader("Upload the video")
         analyze_video = st.button("Analyze", use_container_width=True)
+        video_processed = False
         if video is not None and analyze_video:
             video_bytes = video.read()
 
@@ -193,44 +195,57 @@ def posture_analysis_page():
                     angles_lew,
                     angles_rew,
                 )
+                video_processed = True
 
             # Remove the temporary file after processing if temp_file_path is defined
             if temp_file_path:
                 os.unlink(temp_file_path)
 
-        row = st.columns(5)
-        index = 0
-        for col in row:
-            tile = col.container(height=180)  # Adjust the height as needed
-            tile.markdown(
-                "<p style='text-align: left; font-size: 18px; '>This</p>",
+        # Convert lists to NumPy arrays
+        if video_processed:
+            angles_shoulders_array = np.array(angles_shoulders)
+            angles_lse_array = np.array(angles_lse)
+            angles_rse_array = np.array(angles_rse)
+            angles_lew_array = np.array(angles_lew)
+            angles_rew_array = np.array(angles_rew)
+
+            # Calculate the mean of each array
+            avg_angles = {
+                "Shoulders angle":angles_shoulders_array.mean(),
+                "Left shoulder-elbow angle":angles_lse_array.mean(),
+                "Right shoulder-elbow angle":angles_rse_array.mean(),
+                "Left elbow-wrist angle":angles_lew_array.mean(),
+                "Right elbow-wrist angle":angles_rew_array.mean()
+            }
+
+            st.write("***")
+            row = st.columns(5)
+            index = 0
+            for name, avg_angle, col in zip(avg_angles.keys(), avg_angles.values(), row):
+                tile = col.container(height=130)  # Adjust the height as needed
+                tile.markdown(
+                    f"<p style='text-align: left; font-size: 18px; '>Average {name}: <b>{avg_angle:.2f}</b></p>",
+                    unsafe_allow_html=True,
+                )
+                index += 1
+
+            st.write(
+                "<p style='font-size: 22px; text-align: center; background-color:#E0FFFF; margin-bottom: 2rem;'>Your resume and job description have <strong>"
+                + str(0.89 * 100)
+                + "% similarity</strong></p>",
                 unsafe_allow_html=True,
             )
-            index = index + 1
 
-        video_download_col, statistics_download_col = st.columns(
-            spec=(1, 1), gap="large"
-        )
-        with video_download_col:
-            orignal_video = st.button("Play original video", use_container_width=True)
-            if orignal_video:
-                with input_col:
-                    st.video(video)
-
-            analyse = st.button("Download analysis chart", use_container_width=True)
-            if analyse:
-                st.write(angles_lse)
-
-        with statistics_download_col:
-            processed_video = st.button(
-                "Play processed video", use_container_width=True
+            video_download_col, statistics_download_col = st.columns(
+                spec=(1, 1), gap="large"
             )
-            if processed_video:
-                with input_col:
-                    st.video("output/processed_video.mp4")
-                st.info("Click 'Analyze' to display processed frames.")
-            st.button("Download processed video", use_container_width=True)
+            with video_download_col:
+                analyse = st.button("Download analysis chart", use_container_width=True)
+                if analyse:
+                    st.write(angles_lse)
 
-        st.write(angles_shoulders)
+            with statistics_download_col:
+                st.button("Download processed video", use_container_width=True)
+
 
 posture_analysis_page()
