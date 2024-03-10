@@ -14,6 +14,9 @@ from gensim.models import Word2Vec, KeyedVectors
 from scipy.spatial.distance import cosine
 from wordcloud import WordCloud
 import matplotlib.pyplot as plt
+from langchain.schema.output_parser import StrOutputParser
+from langchain.prompts import PromptTemplate
+from langchain_google_genai import ChatGoogleGenerativeAI
 
 
 st.markdown(
@@ -37,6 +40,35 @@ import string
 nltk.download("punkt")
 punctuation = set(string.punctuation)
 stop_words = set(nltk.corpus.stopwords.words("english"))
+
+
+@st.cache_resource
+def load_model():
+    llm = ChatGoogleGenerativeAI(
+        model="gemini-pro", google_api_key="AIzaSyBmdKcpl5PTuVBVsHsOdAlotEOOAInFxoU"
+    )
+    return llm
+
+
+def get_questions(text):
+
+    llm = load_model()
+    template = """
+            After reviewing the comprehensive details {resume_content} outlined in the candidate's resume, 
+            please provide five tailored questions that the candidate can anticipate, focusing specifically 
+            on their projects and experience. 
+            """
+
+    prompt = PromptTemplate(
+        input_variables=["resume_content"], template=template
+    )
+    output_parser = StrOutputParser()
+    chain = prompt | llm | output_parser
+
+    response = chain.invoke(
+        {"resume_content": text}
+    )
+    return response
 
 
 @st.cache_resource
@@ -135,17 +167,16 @@ def cosine_similarity(vec1, vec2):
     return 1 - cosine(vec1, vec2)
 
 
-
 def resume_radar_page():
 
     col1, col2 = st.columns(spec=(2, 1.3), gap="large")
     with col1:
         st.markdown(
-            "<h1 style='text-align: left; font-size: 50px; '>Resume Radar 👨‍💼</h1>",
+            "<h1 style='text-align: left; font-size: 50px; '>Resume Radar👨‍💼</h1>",
             unsafe_allow_html=True,
         )
         st.markdown(
-            "<p style='font-size: 20px; text-align: left;'>To enhance the precision of tailored recommendations from our recommendation system, accurately input details such as the expected price range you're considering and the names of the apartments you're interested in. This focused input enables our fusion of two distinct recommendation engines—Facilities-bnces and financial considerations</p>",
+            "<p style='font-size: 18px; text-align: left;'>This module is dedicated solely to the refinement of your resume, the analysis of its alignment with a specific job description, and interview preparation. Through this process, we aim to ensure optimal coherence and relevance between your resume and the targeted job role, as well as equip you with the top 5 interview questions you can expect.</p>",
             unsafe_allow_html=True,
         )
         job_description = st.text_input("Enter the job description")
@@ -173,33 +204,14 @@ def resume_radar_page():
                         cosine_similarity(resume_vector, jd_vector), 2
                     )
                     st.write(
-                        "<p style='font-size: 24px;text-align: center;'>Your resume and job description have <strong>"
-                        + str(similarity_score*100)
+                        "<p style='font-size: 22px;text-align: center;background-color:#E0FFFF;'>Your resume and job description have <strong>"
+                        + str(similarity_score * 100)
                         + "% similarity</strong></p>",
                         unsafe_allow_html=True,
                     )
-                    st.write("")
+                    questions = get_questions(clean_text_resume)
+                    st.write(questions)
 
-                    wordcloud1,wordcloud2 = st.columns(spec=(1,1), gap="large")
-                    with wordcloud1:
-                        wordcloud = WordCloud(width=400, height=200, background_color='white').generate(clean_text_resume)
-
-                        # Display the word cloud using matplotlib
-                        fig, ax = plt.subplots(figsize=(5, 2.5))
-                        ax.imshow(wordcloud, interpolation='bilinear')
-                        ax.axis('off')
-                        ax.set_title("Resume Wordcloud")
-                        st.pyplot(fig)
-
-                    with wordcloud2:
-                        wordcloud = WordCloud(width=400, height=200, background_color='white').generate(clean_text_jd)
-
-                        # Display the word cloud using matplotlib
-                        fig, ax = plt.subplots(figsize=(5, 2.5))
-                        ax.imshow(wordcloud, interpolation='bilinear')
-                        ax.axis('off')
-                        ax.set_title("Job description Wordcloud")
-                        st.pyplot(fig)
 
 
 
