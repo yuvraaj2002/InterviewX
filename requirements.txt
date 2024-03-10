@@ -3,12 +3,11 @@ numpy
 seaborn
 black
 streamlit
-langchain
-ctransformers
 tensorflow==2.15.0
 xgboost
 PyPDF2
 nltk
 transformers
+beautifulsoup4
 
 -e .
