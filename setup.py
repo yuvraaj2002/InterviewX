@@ -23,7 +23,7 @@ def get_requirements(file_path: str) -> List[str]:
 
 
 setup(
-    name="Find_Home.AI",
+    name="InterviewX",
     version="0.0.1",
     author="Yuvraj Singh",
     author_email="ys2002github@gmail.com",
