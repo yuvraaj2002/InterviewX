@@ -5,6 +5,7 @@ import tempfile
 import os
 import numpy as np
 import math
+import base64
 
 st.markdown(
     """
@@ -132,7 +133,6 @@ def process_video(
                     angles_rse.append(angle_between_points(rs_cord, re_cord))
                     angles_lew.append(angle_between_points(lw_cord, re_cord))
                     angles_rew.append(angle_between_points(rw_cord, re_cord))
-
                 except:
                     pass
 
@@ -150,16 +150,16 @@ def process_video(
 
     return [angles_shoulders, angles_lse, angles_rse, angles_lew, angles_rew]
 
-
 def posture_analysis_page():
     st.markdown(
-        "<h1 style='text-align: left; font-size: 60px;'>Posture analysis🕵️</h1>",
+        "<h1 style='text-align: left; font-size: 58px;'>Posture analysis🕵️</h1>",
         unsafe_allow_html=True,
     )
     st.markdown(
-        "<p style='font-size: 22px; text-align: left;padding-right: 2rem;padding-bottom: 1rem;'>In times of tough market situations, fake job postings and scams often spike, posing a significant threat to job seekers. To combat this, I've developed a user-friendly module designed to protect individuals from falling prey to such fraudulent activities. This module requires users to input details about the job posting they're considering. Behind the scenes, two powerful AI models thoroughly analyze the provided information. Once completed, users receive a clear indication of whether the job posting is is genuine or potentially decepti.</p>",
+        "<p style='font-size: 22px; text-align: left;padding-right: 2rem;padding-bottom: 1rem;'>In today's competitive job market, where first impressions matter immensely, it's crucial for candidates to convey confidence through their body language and posture during interviews. Recognizing the importance of this aspect, our module is designed to assist candidates in analyzing their posture while addressing interview questions.By simply uploading a brief 20-30 second video and initiating the analysis through the click of a button, our algorithm delves into a detailed examination of the upper body. Specifically, it meticulously scrutinizes the angles formed between the shoulders, elbows, and wrists.</p>",
         unsafe_allow_html=True,
     )
+
 
     # Initialize lists to store left-shoulder, right-shoulder, shoulder, right-elbow-hand, left-elbow-hand
     angles_lse = []
@@ -178,28 +178,34 @@ def posture_analysis_page():
         video = st.file_uploader("Upload the video")
         analyze_video = st.button("Analyze", use_container_width=True)
         video_processed = False
-        if video is not None and analyze_video:
-            video_bytes = video.read()
+        if video is not None:
+            if analyze_video:
+                video_bytes = video.read()
 
-            # Save uploaded video to a temporary file
-            with tempfile.NamedTemporaryFile(delete=False) as temp_file:
-                temp_file.write(video_bytes)
-                temp_file_path = temp_file.name
+                # Save uploaded video to a temporary file
+                with tempfile.NamedTemporaryFile(delete=False) as temp_file:
+                    temp_file.write(video_bytes)
+                    temp_file_path = temp_file.name
 
-            with input_col:
-                angles_shoulders, angles_lse, angles_rse, angles_lew, angles_rew = process_video(
-                    temp_file_path,
-                    angles_shoulders,
-                    angles_lse,
-                    angles_rse,
-                    angles_lew,
-                    angles_rew,
-                )
-                video_processed = True
+                with input_col:
 
-            # Remove the temporary file after processing if temp_file_path is defined
-            if temp_file_path:
-                os.unlink(temp_file_path)
+                    angles_shoulders, angles_lse, angles_rse, angles_lew, angles_rew = (
+                        process_video(
+                            temp_file_path,
+                            angles_shoulders,
+                            angles_lse,
+                            angles_rse,
+                            angles_lew,
+                            angles_rew,
+                        )
+                    )
+                    video_processed = True
+
+                # Remove the temporary file after processing if temp_file_path is defined
+                if temp_file_path:
+                    os.unlink(temp_file_path)
+        else:
+            st.error("Upload the video and then press analyze button❗")
 
         # Convert lists to NumPy arrays
         if video_processed:
@@ -211,18 +217,20 @@ def posture_analysis_page():
 
             # Calculate the mean of each array
             avg_angles = {
-                "Shoulders angle":angles_shoulders_array.mean(),
-                "Left shoulder-elbow angle":angles_lse_array.mean(),
-                "Right shoulder-elbow angle":angles_rse_array.mean(),
-                "Left elbow-wrist angle":angles_lew_array.mean(),
-                "Right elbow-wrist angle":angles_rew_array.mean()
+                "Shoulders angle": angles_shoulders_array.mean(),
+                "Left shoulder-elbow angle": angles_lse_array.mean(),
+                "Right shoulder-elbow angle": angles_rse_array.mean(),
+                "Left elbow-wrist angle": angles_lew_array.mean(),
+                "Right elbow-wrist angle": angles_rew_array.mean(),
             }
 
             st.write("***")
             row = st.columns(5)
             index = 0
-            for name, avg_angle, col in zip(avg_angles.keys(), avg_angles.values(), row):
-                tile = col.container(height=130)  # Adjust the height as needed
+            for name, avg_angle, col in zip(
+                avg_angles.keys(), avg_angles.values(), row
+            ):
+                tile = col.container(height=120)  # Adjust the height as needed
                 tile.markdown(
                     f"<p style='text-align: left; font-size: 18px; '>Average {name}: <b>{avg_angle:.2f}</b></p>",
                     unsafe_allow_html=True,
@@ -236,16 +244,14 @@ def posture_analysis_page():
                 unsafe_allow_html=True,
             )
 
-            video_download_col, statistics_download_col = st.columns(
-                spec=(1, 1), gap="large"
-            )
-            with video_download_col:
-                analyse = st.button("Download analysis chart", use_container_width=True)
-                if analyse:
-                    st.write(angles_lse)
 
-            with statistics_download_col:
-                st.button("Download processed video", use_container_width=True)
+
+            analyse = st.button("Display analysis charts", use_container_width=True)
+            if analyse:
+                st.write(angles_lse)
+                st.write(angles_rse)
+
+
 
 
 posture_analysis_page()
