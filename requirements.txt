@@ -6,6 +6,7 @@ scikit-learn==1.4.1.post1
 xgboost==2.0.3
 PyPDF2==3.0.1
 nltk==3.8.1
+category_encoders==2.6.3
 transformers
 gensim==4.3.2
 beautifulsoup4==4.12.3
