@@ -1,14 +1,29 @@
 import streamlit as st
 
-st.set_page_config(page_title="AI_Tutor", page_icon="🧑‍🏫", layout="wide")
+# Set page configuration
+st.set_page_config(
+    page_title="InterviewX",
+    page_icon="🚀",
+    layout="wide",
+)
+
 st.markdown(
     """
         <style>
                .block-container {
-                    padding-top: 0.5rem;
+                    padding-top: 1rem;
                     padding-bottom: 0rem;
                     # padding-left: 2rem;
                     # padding-right:2rem;
+                }
+                .top-margin{
+                    margin-top: 4rem;
+                    margin-bottom:2rem;
+                }
+                .block-button{
+                    padding: 10px; 
+                    width: 100%;
+                    background-color: #c4fcce;
                 }
         </style>
         """,
@@ -16,33 +31,50 @@ st.markdown(
 )
 
 
+# Main page function
 def main_page():
-    # Set the background image with a darker gradient overlay
-    background_image = """
-    <style>
-    [data-testid="stAppViewContainer"] > .main {
-        position: relative;
-        background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url("https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D");
-        background-size: 100vw 100vh;  /* This sets the size to cover 100% of the viewport width and height */
-        background-position: center;  
-        background-repeat: no-repeat;
-    }
-    </style>
-    """
+    Overview_col, Img_col = st.columns(spec=(1.2, 1), gap="large")
 
-    # Apply the background image with a darker gradient overlay
-    st.markdown(background_image, unsafe_allow_html=True)
-
-    with st.container():
-        # Title and the introduction text
+    with Overview_col:
+        # Content for main page
         st.markdown(
-            "<h1 style='text-align: center; font-size: 80px; padding-top: 8rem;'>FindHome.AI</h1>",
+            "<h1 style='text-align: left; font-size: 70px; '>InterviewX</h1>",
             unsafe_allow_html=True,
         )
         st.markdown(
-            "<p style='font-size: 25px; text-align: center;padding-left: 2rem;padding-right: 2rem;'>Discover your dream home effortlessly with our AI-Powered Home Finder in Gurgaon. Using advanced algorithms, it streamlines house-hunting, offering personalized recommendations. Integrated with a cutting-edge loan eligibility module, it provides real-time insights for informed financial decisions. This powerful feature considers factors like credit score, ensuring your dream home is within budget. Revolutionize your homebuying experience with the future of technology, combining intelligent home search and personalized financial guidance.</p>",
+            "<p style='font-size: 22px; text-align: left;'>Are you ready to ace your next interview with confidence? Welcome to InterviewX, your ultimate companion on the journey to interview success. Harnessing the power of cutting-edge AI technology, InterviewX offers a comprehensive suite of modules designed to empower individuals at every stage of their interview preparation.</p>",
             unsafe_allow_html=True,
         )
 
+        st.markdown("""
+        <div>
+            <ul>
+                <li><p style='font-size: 21px; text-align: left;'><strong>Avoid scams effortlessly!</strong> InterviewX helps you distinguish genuine job postings from fraudulent ones, saving you time and effort.</p></li>
+                <li><p style='font-size: 22px; text-align: left;'><strong>Resume Content Matching and Top 5 Questions:</strong> Craft the perfect resume! InterviewX analyzes your resume and matches it with job descriptions, revealing the top five expected questions based on your qualifications.</p></li>
+                <li><p style='font-size: 22px; text-align: left;'><strong>Real-Time Posture Analysis:</strong> Project confidence flawlessly! InterviewX's posture analysis gives instant feedback to refine your body language for a professional impression during interviews.</p></li>
+                <li><p style='font-size: 22px; text-align: left;'><strong>Text Summarization:</strong> Stay informed, save time! InterviewX summarizes lengthy materials quickly and efficiently. Just input the blog post link for concise insights.</p></li>
+                <li><p style='font-size: 22px; text-align: left;'><strong>Ice Breaker:</strong> Make a memorable entrance! InterviewX provides fascinating insights into your interviewer. Simply give their name, and get two interesting facts and an engaging ice breaker statement, setting the stage for rapport-building success.</p></li>
+            </ul>
+        </div>
+        """, unsafe_allow_html=True)
+
+    with Img_col:
+        st.markdown("<div class='top-margin'> </div>", unsafe_allow_html=True)
+        st.image("artifacts/Main_Page.jpg")
+        st.write("")
+
+        social_col1, social_col2, social_col3, social_col4 = st.columns(spec=(1, 1, 1, 1), gap="large")
+        with social_col1:
+            st.link_button("Github👨‍💻", use_container_width=True, url="https://github.com/yuvraaj2002")
+
+        with social_col2:
+            st.link_button("Linkedin🧑‍💼", use_container_width=True,
+                           url="https://www.linkedin.com/in/yuvraj-singh-a4430a215/")
+
+        with social_col3:
+            st.link_button("Twitter🧠", use_container_width=True, url="https://twitter.com/Singh_yuvraaj1")
+
+        with social_col4:
+            st.link_button("Blogs✒️", use_container_width=True, url="https://yuvraj01.hashnode.dev/")
 
 main_page()
