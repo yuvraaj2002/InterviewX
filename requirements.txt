@@ -3,11 +3,12 @@ numpy==1.26.4
 seaborn==0.13.2
 streamlit==1.32.0
 scikit-learn==1.4.1.post1
+plotly==5.19.0
 xgboost==2.0.3
 PyPDF2==3.0.1
 nltk==3.8.1
 category_encoders==2.6.3
-transformers
+transformers==4.38.2
 gensim==4.3.2
 beautifulsoup4==4.12.3
 opencv-python==4.9.0.80
@@ -15,5 +16,9 @@ mediapipe==0.10.11
 plotly==5.19.0
 langchain==0.1.11
 langchainhub==0.1.15
+langchain-community==0.0.27
+langchain-core==0.1.30
+langchain-experimental==0.0.53
+langchain-google-genai==0.0.9
 python-dotenv==1.0.1
 wordcloud==1.9.2
