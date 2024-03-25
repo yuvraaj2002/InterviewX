@@ -189,24 +189,28 @@ def resume_radar_page():
             st.write("")
             analyze_bt = st.button("Analyze my resume🔎", use_container_width=True)
             if analyze_bt:
-                with col1:
-                    w2v_model = load_w2v()
-                    clean_text_resume = extract_clean_pdf(pdf_data)
-                    clean_text_jd = clean_data(job_description)
+                if not job_description:
+                    with col1:
+                        st.error("Please provide the job description first.")
+                else:
+                    with col1:
+                        w2v_model = load_w2v()
+                        clean_text_resume = extract_clean_pdf(pdf_data)
+                        clean_text_jd = clean_data(job_description)
 
-                    resume_vector = vectorize_text(clean_text_resume, w2v_model)
-                    jd_vector = vectorize_text(clean_text_jd, w2v_model)
-                    similarity_score = np.round(
-                        cosine_similarity(resume_vector, jd_vector), 2
-                    )
-                    st.write(
-                        "<p style='font-size: 22px;text-align: center;background-color:#E0FFFF;'>Your resume and job description have <strong>"
-                        + str(similarity_score * 100)
-                        + "% similarity</strong></p>",
-                        unsafe_allow_html=True,
-                    )
-                    questions = get_questions(clean_text_resume)
-                    st.write(questions)
+                        resume_vector = vectorize_text(clean_text_resume, w2v_model)
+                        jd_vector = vectorize_text(clean_text_jd, w2v_model)
+                        similarity_score = np.round(
+                            cosine_similarity(resume_vector, jd_vector), 2
+                        )
+                        st.write(
+                            "<p style='font-size: 22px;text-align: center;background-color:#C3E8FF;'>Your resume and job description have <strong>"
+                            + str(similarity_score * 100)
+                            + "% similarity</strong></p>",
+                            unsafe_allow_html=True,
+                        )
+                        questions = get_questions(clean_text_resume)
+                        st.write(questions)
 
 
 resume_radar_page()
