@@ -79,7 +79,6 @@ def Ice_breaker_page():
         if name:
             if info_bt:
 
-                # Assuming ice_break_with function retrieves information based on the name
                 summary_and_facts, interests, ice_breakers, profile_pic_url = (
                     ice_break_with(name)
                 )
@@ -125,7 +124,7 @@ def Ice_breaker_page():
             if ice_breakers is not None:
                 for ice_breaker in ice_breakers:
                     st.markdown(
-                        f"<p style='text-align: left; font-size: 20px;background-color:#E0FFFF;padding:0.5rem;'>{ice_breaker}</p>",
+                        f"<p style='text-align: left; font-size: 20px;background-color:#C3E8FF;padding:0.5rem;'>{ice_breaker}</p>",
                         unsafe_allow_html=True,
                     )
 
