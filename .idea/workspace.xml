@@ -7,13 +7,8 @@
     <list default="true" id="dea36ed9-e3de-4743-98f7-7812d414caf2" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/AI_Tutor.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/AI_Tutor.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.streamlit/config.toml" beforeDir="false" afterPath="$PROJECT_DIR$/.streamlit/config.toml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Home.py" beforeDir="false" afterPath="$PROJECT_DIR$/Home.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pages/3_Posture_Analysis.py" beforeDir="false" afterPath="$PROJECT_DIR$/pages/3_Posture_Analysis.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Chains.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/Chains.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Likedin_agent.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/Likedin_agent.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Scrapte_linkedin_data.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/Scrapte_linkedin_data.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/scrape_tool.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/scrape_tool.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pages/5_Break_the_ICE.py" beforeDir="false" afterPath="$PROJECT_DIR$/pages/5_Break_the_ICE.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -46,15 +41,15 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "master",
-    "last_opened_file_path": "D:/Projects/InterviewX/pages/1_Spot_the_scam.py",
-    "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;last_opened_file_path&quot;: &quot;D:/Projects/InterviewX/pages/1_Spot_the_scam.py&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable&quot;
   }
-}]]></component>
+}</component>
   <component name="RunManager" selected="Python.1_Spot_the_scam">
     <configuration name="1_Spot_the_scam" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
       <module name="AI_Tutor" />
