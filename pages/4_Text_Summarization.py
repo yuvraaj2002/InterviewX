@@ -176,7 +176,7 @@ def text_summarization_page():
     with col2:
         st.markdown("<h3>Unveiling the Magic 🪄</h3>", unsafe_allow_html=True)
         st.markdown(
-            "<p style='background-color: #E0FFFF; padding: 20px; border-radius: 10px; font-size: 20px;'>URLs submitted undergo HTTPS verification; if successful and devoid of paywalls, the article's content is extracted. A model generates variable chunks of summarized text for efficient data loading. These summarized chunks are stored in a text file for user access..</p>",
+            "<p style='background-color: #C3E8FF; padding: 20px; border-radius: 10px; font-size: 20px;'>URLs submitted undergo HTTPS verification; if successful and devoid of paywalls, the article's content is extracted. A model generates variable chunks of summarized text for efficient data loading. These summarized chunks are stored in a text file for user access..</p>",
             unsafe_allow_html=True,
         )
 
