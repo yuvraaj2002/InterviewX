@@ -38,22 +38,23 @@ def main_page():
     with Overview_col:
         # Content for main page
         st.markdown(
-            "<h1 style='text-align: left; font-size: 70px; '>InterviewX</h1>",
+            "<h1 style='text-align: left; font-size: 85px; '>InterviewX</h1>",
             unsafe_allow_html=True,
         )
+        st.write("")
         st.markdown(
-            "<p style='font-size: 22px; text-align: left;'>Are you ready to ace your next interview with confidence? Welcome to InterviewX, your ultimate companion on the journey to interview success. Harnessing the power of cutting-edge AI technology, InterviewX offers a comprehensive suite of modules designed to empower individuals at every stage of their interview preparation.</p>",
+            "<p style='font-size: 21px; text-align: left;'>Are you ready to ace your next interview with confidence? Welcome to InterviewX, your ultimate companion on the journey to interview success. Harnessing the power of cutting-edge AI technology, InterviewX offers a comprehensive suite of modules designed to empower individuals at every stage of their interview preparation.</p>",
             unsafe_allow_html=True,
         )
 
         st.markdown("""
         <div>
             <ul>
-                <li><p style='font-size: 21px; text-align: left;'><strong>Avoid scams effortlessly!</strong> InterviewX helps you distinguish genuine job postings from fraudulent ones, saving you time and effort.</p></li>
-                <li><p style='font-size: 22px; text-align: left;'><strong>Resume Content Matching and Top 5 Questions:</strong> Craft the perfect resume! InterviewX analyzes your resume and matches it with job descriptions, revealing the top five expected questions based on your qualifications.</p></li>
-                <li><p style='font-size: 22px; text-align: left;'><strong>Real-Time Posture Analysis:</strong> Project confidence flawlessly! InterviewX's posture analysis gives instant feedback to refine your body language for a professional impression during interviews.</p></li>
-                <li><p style='font-size: 22px; text-align: left;'><strong>Text Summarization:</strong> Stay informed, save time! InterviewX summarizes lengthy materials quickly and efficiently. Just input the blog post link for concise insights.</p></li>
-                <li><p style='font-size: 22px; text-align: left;'><strong>Ice Breaker:</strong> Make a memorable entrance! InterviewX provides fascinating insights into your interviewer. Simply give their name, and get two interesting facts and an engaging ice breaker statement, setting the stage for rapport-building success.</p></li>
+                <li><p style='font-size: 20px; text-align: left;'><strong>Avoid scams effortlessly!</strong> InterviewX helps you distinguish genuine job postings from fraudulent ones, saving you time and effort.</p></li>
+                <li><p style='font-size: 20px; text-align: left;'><strong>Resume Content Matching and Top 5 Questions:</strong> Craft the perfect resume! InterviewX analyzes your resume and matches it with job descriptions, revealing the top five expected questions based on your qualifications.</p></li>
+                <li><p style='font-size: 20px; text-align: left;'><strong>Real-Time Posture Analysis:</strong> Project confidence flawlessly! InterviewX's posture analysis gives instant feedback to refine your body language for a professional impression during interviews.</p></li>
+                <li><p style='font-size: 20px; text-align: left;'><strong>Text Summarization:</strong> Stay informed, save time! InterviewX summarizes lengthy materials quickly and efficiently. Just input the blog post link for concise insights.</p></li>
+                <li><p style='font-size: 20px; text-align: left;'><strong>Ice Breaker:</strong> Make a memorable entrance! InterviewX provides fascinating insights into your interviewer. Simply give their name, and get two interesting facts and an engaging ice breaker statement, setting the stage for rapport-building success.</p></li>
             </ul>
         </div>
         """, unsafe_allow_html=True)

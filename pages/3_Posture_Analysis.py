@@ -4,6 +4,7 @@ import streamlit as st
 import tempfile
 import os
 import numpy as np
+import pandas as pd
 import math
 import base64
 
@@ -237,12 +238,14 @@ def posture_analysis_page():
                 )
                 index += 1
 
-            st.write(
-                "<p style='font-size: 22px; text-align: center; background-color:#E0FFFF; margin-bottom: 2rem;'>Your resume and job description have <strong>"
-                + str(0.89 * 100)
-                + "% similarity</strong></p>",
-                unsafe_allow_html=True,
-            )
+
+            feedback_dict = {'Feedback': ['✅','❌']}
+            feedback_df = pd.DataFrame(feedback_dict, index=['Shoulder alignment', 'Body language'])
+
+            st.write("***")
+            st.write(feedback_df, width=-1)  # Use width=-1 to stretch the DataFrame to the full width of the column
+            #st.dataframe(feedback_df)
+
 
 
 posture_analysis_page()

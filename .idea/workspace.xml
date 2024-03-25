@@ -6,23 +6,14 @@
   <component name="ChangeListManager">
     <list default="true" id="dea36ed9-e3de-4743-98f7-7812d414caf2" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/AI_Tutor.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/AI_Tutor.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Notebook/Fake_Job_Posting.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/Notebook/Fake_Job_Posting.ipynb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Notebook/Human_Emotion.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/Notebook/Human_Emotion.ipynb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Notebook/Job_Posting_Texts.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/Notebook/Job_Posting_Texts.ipynb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Notebook/Pose_Estimation.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/Notebook/Pose_Estimation.ipynb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Notebook/Resume_QA.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/Notebook/Resume_QA.ipynb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Notebook/Salary_Prediction.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/Notebook/Salary_Prediction.ipynb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Notebook/Text_Summarization.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/Notebook/Text_Summarization.ipynb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Notebook/que_classification.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/Notebook/que_classification.ipynb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.streamlit/config.toml" beforeDir="false" afterPath="$PROJECT_DIR$/.streamlit/config.toml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Home.py" beforeDir="false" afterPath="$PROJECT_DIR$/Home.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pages/3_Posture_Analysis.py" beforeDir="false" afterPath="$PROJECT_DIR$/pages/3_Posture_Analysis.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Chains.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/Chains.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Likedin_agent.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/Likedin_agent.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Scrapte_linkedin_data.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/Scrapte_linkedin_data.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/scrape_tool.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/scrape_tool.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/streamlit/pages/1_Spot_the_scam.py" beforeDir="false" afterPath="$PROJECT_DIR$/streamlit/pages/1_Spot_the_scam.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/streamlit/pages/2_Resume_Radar.py" beforeDir="false" afterPath="$PROJECT_DIR$/streamlit/pages/2_Resume_Radar.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/streamlit/pages/3_Posture_Analysis.py" beforeDir="false" afterPath="$PROJECT_DIR$/streamlit/pages/3_Posture_Analysis.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/streamlit/pages/4_Add_Questions.py" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -55,16 +46,50 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
-    &quot;last_opened_file_path&quot;: &quot;D:/Projects/InterviewX/src/Tool.py&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "git-widget-placeholder": "master",
+    "last_opened_file_path": "D:/Projects/InterviewX/pages/1_Spot_the_scam.py",
+    "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable"
   }
-}</component>
-  <component name="RunManager" selected="Python.Tool">
+}]]></component>
+  <component name="RunManager" selected="Python.1_Spot_the_scam">
+    <configuration name="1_Spot_the_scam" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
+      <module name="AI_Tutor" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+        <env name="TF_ENABLE_ONEDNN_OPTS" value="0" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="SDK_NAME" value="D:\Projects\InterviewX\venv" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="net.ashald.envfile">
+        <option name="IS_ENABLED" value="false" />
+        <option name="IS_SUBST" value="false" />
+        <option name="IS_PATH_MACRO_SUPPORTED" value="false" />
+        <option name="IS_IGNORE_MISSING_FILES" value="false" />
+        <option name="IS_ENABLE_EXPERIMENTAL_INTEGRATIONS" value="false" />
+        <ENTRIES>
+          <ENTRY IS_ENABLED="true" PARSER="runconfig" IS_EXECUTABLE="false" />
+        </ENTRIES>
+      </EXTENSION>
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/pages/1_Spot_the_scam.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <configuration name="5_Break_the_ICE" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
       <module name="AI_Tutor" />
       <option name="ENV_FILES" value="" />
@@ -115,6 +140,7 @@
     <list>
       <item itemvalue="Python.Tool" />
       <item itemvalue="Python.5_Break_the_ICE" />
+      <item itemvalue="Python.1_Spot_the_scam" />
     </list>
   </component>
   <component name="SharedIndexes">

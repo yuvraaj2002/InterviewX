@@ -1,12 +1,12 @@
 from langchain.chains import LLMChain
 from langchain_core.prompts import PromptTemplate
-from Tools.Parsers import summary_parser, ice_breaker_parser, topics_of_interest_parser
+from src.Parsers import summary_parser, ice_breaker_parser, topics_of_interest_parser
 from langchain_google_genai import ChatGoogleGenerativeAI
 
 
 llm = ChatGoogleGenerativeAI(
-        model="gemini-pro", google_api_key="AIzaSyBmdKcpl5PTuVBVsHsOdAlotEOOAInFxoU"
-    )
+    model="gemini-pro", google_api_key="AIzaSyBmdKcpl5PTuVBVsHsOdAlotEOOAInFxoU"
+)
 
 
 def get_summary_chain() -> LLMChain:

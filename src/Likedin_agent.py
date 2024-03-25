@@ -1,5 +1,6 @@
 from dotenv import load_dotenv
 import streamlit as st
+
 load_dotenv()
 from langchain.agents import (
     create_react_agent,
@@ -8,7 +9,7 @@ from langchain.agents import (
 from langchain_core.tools import Tool
 from langchain import hub
 from langchain_core.prompts import PromptTemplate
-from Tools.scrape_tool import get_profile_url
+from src.scrape_tool import get_profile_url
 from langchain_google_genai import ChatGoogleGenerativeAI
 
 
