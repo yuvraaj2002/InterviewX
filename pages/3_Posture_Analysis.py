@@ -238,14 +238,35 @@ def posture_analysis_page():
                 )
                 index += 1
 
+            feedback_dict = {
+                'Shoulder alignment': '',
+                'Hand gestures': '',
+                'Left Shoulder-Elbow': '',
+                'Right Shoulder-Elbow': ''
+            }
 
-            feedback_dict = {'Feedback': ['✅','❌']}
-            feedback_df = pd.DataFrame(feedback_dict, index=['Shoulder alignment', 'Body language'])
+            if avg_angles['Shoulders angle'] > 0 and avg_angles['Shoulders angle'] < 15:
+                feedback_dict['Shoulder alignment'] = '✅'
+            else:
+                feedback_dict['Shoulder alignment'] = '❌'
 
-            st.write("***")
-            st.write(feedback_df, width=-1)  # Use width=-1 to stretch the DataFrame to the full width of the column
-            #st.dataframe(feedback_df)
+            if avg_angles['Left elbow-wrist angle'] != 0 and avg_angles['Right elbow-wrist angle'] != 0:
+                feedback_dict['Hand gestures'] = '✅'
+            else:
+                feedback_dict['Hand gestures'] = '❌'
 
+            if avg_angles['Left shoulder-elbow angle'] > 0 and avg_angles['Left shoulder-elbow angle'] < 20:
+                feedback_dict['Left Shoulder-Elbow'] = '✅'
+            else:
+                feedback_dict['Left Shoulder-Elbow'] = '❌'
+
+            if avg_angles['Right shoulder-elbow angle'] > 0 and avg_angles['Right shoulder-elbow angle'] < 20:
+                feedback_dict['Right Shoulder-Elbow'] = '✅'
+            else:
+                feedback_dict['Right Shoulder-Elbow'] = '❌'
+
+            feedback_df = pd.DataFrame(feedback_dict, index=['Feedback'])
+            st.dataframe(feedback_df)
 
 
 posture_analysis_page()
