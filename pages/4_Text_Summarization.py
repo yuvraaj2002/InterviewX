@@ -132,7 +132,7 @@ def text_summarization_page():
         unsafe_allow_html=True,
     )
 
-    Analytics_intro = "<p style='font-size: 20px; text-align: center;'>Welcome to a comprehensive exploration of Gurgaon's real estate landscape! Our dedicated module is designed to offer an in-depth understanding of the intricate dynamics that influence property prices in Gurgaon, spanning from independent houses to modern flats. Whether you're a prospective buyer, seller, investor, or industry professional, this module is tailored to provide you with invaluable insights into the factors shaping Gurgaon's propele is tailored to provide you with invaluable insights into the factors shaping Gurgaon's property </p>"
+    Analytics_intro = "<p style='font-size: 22px; text-align: center;'>This module was developed to address situations where, during our placement preparations or general inquiries, we need information on a specific topic. Instead of reviewing extensive content, users can simply provide the link to a website containing the relevant blog post. Our module will then automatically scrape the content and generate a summary for you. </p>"
     st.markdown(Analytics_intro, unsafe_allow_html=True)
     st.markdown("***")
 
@@ -179,6 +179,9 @@ def text_summarization_page():
             "<p style='background-color: #C3E8FF; padding: 20px; border-radius: 10px; font-size: 20px;'>URLs submitted undergo HTTPS verification; if successful and devoid of paywalls, the article's content is extracted. A model generates variable chunks of summarized text for efficient data loading. These summarized chunks are stored in a text file for user access..</p>",
             unsafe_allow_html=True,
         )
+
+
+        st.link_button("Original Blog Post (Anti Scaraping disabled)", "https://www.codecontent.net/post/introduction-to-llama",use_container_width=True)
 
         wordcnt_col1, wordcnt_col2 = st.columns(2, gap="large")
         if bool_summarized_content:
