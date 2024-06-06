@@ -46,6 +46,25 @@ def univariate_analysis(df):
         with st.expander(label = "What's the count of categorical/numerical features in our data ?"):
             st.write("All the 10 features are categorical in nature, but out of all 3 features are ordinal features,1 is nominal feature and remaining 6 are simple binary categorical features")
 
+    col1, col2,col3 = st.columns(spec=(1,1,1), gap="large")
+
+    with col1:
+        # Plot pie chart for employment_type
+        fig1 = px.pie(df, names='employment_type', title='Distribution of Employment Type')
+        st.plotly_chart(fig1, use_container_width=True)
+
+    with col2:
+        # Plot pie chart for required_experience
+        fig2 = px.pie(df, names='required_experience', title='Distribution of Required Experience')
+        st.plotly_chart(fig2, use_container_width=True)
+
+    with col3:
+        # Plot pie chart for required_education
+        fig3 = px.pie(df, names='required_education', title='Distribution of Required Education')
+        st.plotly_chart(fig3, use_container_width=True)
+
+
+
 
 
 def multivariate_analysis(df):
