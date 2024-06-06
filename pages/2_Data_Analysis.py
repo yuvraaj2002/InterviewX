@@ -46,22 +46,74 @@ def univariate_analysis(df):
         with st.expander(label = "What's the count of categorical/numerical features in our data ?"):
             st.write("All the 10 features are categorical in nature, but out of all 3 features are ordinal features,1 is nominal feature and remaining 6 are simple binary categorical features")
 
-    col1, col2,col3 = st.columns(spec=(1,1,1), gap="large")
+    pie_col1, pie_col2,pie_col3 = st.columns(spec=(1,1,1), gap="large")
 
-    with col1:
+    with pie_col1:
         # Plot pie chart for employment_type
         fig1 = px.pie(df, names='employment_type', title='Distribution of Employment Type')
         st.plotly_chart(fig1, use_container_width=True)
 
-    with col2:
+    with pie_col2:
         # Plot pie chart for required_experience
         fig2 = px.pie(df, names='required_experience', title='Distribution of Required Experience')
         st.plotly_chart(fig2, use_container_width=True)
 
-    with col3:
+    with pie_col3:
         # Plot pie chart for required_education
         fig3 = px.pie(df, names='required_education', title='Distribution of Required Education')
         st.plotly_chart(fig3, use_container_width=True)
+
+
+    # Create column layout
+    bar_col1, bar_col2, bar_col3, bar_col4 = st.columns(spec=(1, 1, 1, 1), gap="large")
+
+    # Plot bar plot for has_company_logo
+    with bar_col1:
+        fig5 = px.bar(df['has_company_logo'].value_counts().reset_index(), x='has_company_logo', y='count',
+                      labels={'index': 'Has Company Logo', 'has_company_logo': 'Count'},
+                      title='Distribution of Has Company Logo')
+        st.plotly_chart(fig5, use_container_width=True)
+
+    # Plot bar plot for has_questions
+    with bar_col2:
+        fig6 = px.bar(df['has_questions'].value_counts().reset_index(), x='has_questions', y='count',
+                      labels={'index': 'Has Questions', 'has_questions': 'Count'},
+                      title='Distribution of Has Questions')
+        st.plotly_chart(fig6, use_container_width=True)
+
+    # Plot bar plot for Salary_range_provided
+    with bar_col3:
+        fig7 = px.bar(df['Salary_range_provided'].value_counts().reset_index(), x='Salary_range_provided', y='count',
+                      labels={'index': 'Salary Range Provided', 'Salary_range_provided': 'Count'},
+                      title='Distribution of Salary Range Provided')
+        st.plotly_chart(fig7, use_container_width=True)
+
+    # Plot bar plot for department_mentioned
+    with bar_col4:
+        fig8 = px.bar(df['department_mentioned'].value_counts().reset_index(), x='department_mentioned', y='count',
+                      labels={'index': 'Department Mentioned', 'department_mentioned': 'Count'},
+                      title='Distribution of Department Mentioned')
+        st.plotly_chart(fig8, use_container_width=True)
+
+
+    # Calculate value counts for the industry feature
+    value_counts = df['industry'].value_counts().reset_index()
+    value_counts.columns = ['industry', 'count']
+
+    # Filter values with count >= 100
+    value_counts_filtered = value_counts[value_counts['count'] >= 100]
+
+    # Create bubble plot
+    fig = px.scatter(value_counts_filtered, x='industry', y=value_counts_filtered.index, size='count',
+                     labels={'industry': 'Industry', 'count': 'Count'},
+                     title='Understanding the frequency of industry domains',
+                     size_max=50)
+
+    # Update layout
+    fig.update_layout(yaxis={'categoryorder': 'total ascending'})
+
+    # Show plot
+    st.plotly_chart(fig, use_container_width=True)
 
 
 
