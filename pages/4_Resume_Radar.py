@@ -45,7 +45,7 @@ stop_words = set(nltk.corpus.stopwords.words("english"))
 @st.cache_resource
 def load_model():
     llm = ChatGoogleGenerativeAI(
-        model="gemini-pro", google_api_key="AIzaSyBmdKcpl5PTuVBVsHsOdAlotEOOAInFxoU"
+        model="gemini-pro", google_api_key="AIzaSyBKhTXbpfX9fBBGW6gEDKn5dc_ez-s7hWw"
     )
     return llm
 
@@ -55,7 +55,7 @@ def get_questions(text):
     llm = load_model()
     template = """
             After reviewing the comprehensive details {resume_content} outlined in the candidate's resume, 
-            please provide five tailored questions that the candidate can anticipate, focusing specifically 
+            please provide seven tailored questions that the candidate can anticipate, focusing specifically 
             on their projects and experience. 
             """
 
@@ -163,30 +163,37 @@ def cosine_similarity(vec1, vec2):
     return 1 - cosine(vec1, vec2)
 
 
-def resume_radar_page():
+# State management
+if 'clean_text_resume' not in st.session_state:
+    st.session_state.clean_text_resume = None
 
+
+def resume_radar_page():
     col1, col2 = st.columns(spec=(2, 1.3), gap="large")
+    uploaded_file = None
     with col1:
         st.markdown(
             "<h1 style='text-align: left; font-size: 50px; '>Resume Radar👨‍💼</h1>",
             unsafe_allow_html=True,
         )
         st.markdown(
-            "<p style='font-size: 18px; text-align: left;'>This module is dedicated solely to the refinement of your resume, the analysis of its alignment with a specific job description, and interview preparation. Through this process, we aim to ensure optimal coherence and relevance between your resume and the targeted job role, as well as equip you with the top 5 interview questions you can expect.</p>",
+            "<p style='font-size: 19px; text-align: left;'>We are excited to introduce our innovative module designed to streamline and optimize the job application process. This module allows users to upload their resumes and input a job description for the position they are applying for. Leveraging the power of advanced AI algorithms, our system meticulously analyzes the content of the uploaded resume and compares it against the provided job description. The AI-driven analysis generates a similarity score that offers valuable insights into how well the resume aligns with the job requirements. This score helps users identify strengths and areas for improvement, enhancing their chances of securing the desired position.</p>",
+            unsafe_allow_html=True,
+        )
+        st.markdown(
+            "<p style='font-size: 19px; text-align: left;'>In addition to the similarity score, and with the user's consent, our module goes a step further by providing a tailored set of interview preparation tools. Specifically, it generates a list of the top 10 interview questions that candidates can expect, based on the unique content of their resume. These questions are designed to prepare candidates effectively, ensuring they are well-equipped to showcase their skills and experience during the interview.</p>",
             unsafe_allow_html=True,
         )
         job_description = st.text_input("Enter the job description")
         uploaded_file = st.file_uploader("Choose a PDF file", type="pdf")
 
     with col2:
-
         if uploaded_file is not None:
             pdf_data = uploaded_file.read()
             b64_pdf = base64.b64encode(pdf_data).decode("utf-8")
             pdf_display = f'<embed src="data:application/pdf;base64,{b64_pdf}" width="690" height="740" type="application/pdf">'
             st.markdown(pdf_display, unsafe_allow_html=True)
 
-            st.write("")
             analyze_bt = st.button("Analyze my resume🔎", use_container_width=True)
             if analyze_bt:
                 if not job_description:
@@ -209,8 +216,18 @@ def resume_radar_page():
                             + "% similarity</strong></p>",
                             unsafe_allow_html=True,
                         )
-                        questions = get_questions(clean_text_resume)
-                        st.write(questions)
+                        # Save clean_text_resume in session state
+                        st.session_state.clean_text_resume = clean_text_resume
+
+    concent_button = st.button("Get tailored Interview questions as per your resume", use_container_width=True)
+    if concent_button:
+        if st.session_state.clean_text_resume:
+            questions = get_questions(st.session_state.clean_text_resume)
+            st.title("Top Interview Questions Tailored for You")
+            st.write(questions)
+            st.write("")
+        else:
+            st.error("Please analyze your resume first.")
 
 
 resume_radar_page()
