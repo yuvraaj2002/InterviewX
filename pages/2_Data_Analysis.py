@@ -1,9 +1,11 @@
 import streamlit as st
 import pandas as pd
+import numpy as np
 import plotly.express as px
 import plotly.graph_objs as go
 import plotly.figure_factory as ff
 from plotly.subplots import make_subplots
+from sklearn.metrics import roc_curve, auc
 
 
 st.markdown(
@@ -23,8 +25,47 @@ st.markdown(
 
 @st.cache_resource
 def load_dataset():
-    df = pd.read_csv("Dataset/Job_features_num_cat.csv")
-    df.drop(['Unnamed: 0'],axis=1,inplace=True)
+    df = pd.read_csv("Dataset/Job_features_NText_.csv")
+    return df
+
+
+def back_encoding(df):
+
+    cols = ['has_company_logo', 'Salary_range_provided', 'department_mentioned']
+    for col in cols:
+        df[col] = df[col].replace({1: 'Yes', 0: 'No'})
+
+    # Only considering the floor value
+    cols = ['employment_type', 'required_experience', 'required_education']
+    for col in cols:
+        df[col] = np.floor(df[col])
+
+    df['required_experience'] = df['required_experience'].replace({
+        0: "Not Applicable",
+        1: "Internship",
+        2: "Entry level",
+        3: "Mid-Senior level",
+        4: "Associate",
+        5: "Director",
+        6: "Executive"})
+
+    df['employment_type'] = df['employment_type'].replace(
+        {0: "Other", 1: "Temporary", 2: "Part-time", 3: "Contract", 4: "Full-time"})
+
+    df['required_education'] = df['required_education'].replace({
+        0: "Unspecified",
+        1: "Some High School Coursework",
+        2: "High School or equivalent",
+        3: "Some College Coursework Completed",
+        4: "Vocational",
+        5: "Vocational - HS Diploma",
+        6: "Vocational - Degree",
+        7: "Associate Degree",
+        8: "Certification",
+        9: "Professional",
+        10: "Bachelor's Degree",
+        11: "Master's Degree",
+        12: "Doctorate"})
     return df
 
 
@@ -33,18 +74,19 @@ def univariate_analysis(df):
         "<h2 style='text-align: left; font-size: 40px; '>Introductory Analysis</h1>",
         unsafe_allow_html=True,
     )
-    col1, col2 = st.columns(spec=(2, 1), gap="large")
+
+    col1, col2 = st.columns(spec=(2, 1), gap="small")
     with col1:
         st.dataframe(df.head(8))
     with col2:
         st.markdown(
-            "<p style='font-size: 17px; text-align: left;background-color:#C3E8FF;padding:1rem;'>Explore clustering algorithms—K-Means, DBSCAN, and AGNES—by selecting one from the dropdown menu and clicking Visualize to see how each partitions the data. This interactive exploration reveals unique cluster structures formed by each algorithm, providing valuable insights into their behaviors.</p>",
+            "<p style='font-size: 17px; text-align: left;background-color:#C3E8FF;padding:1rem;'>Welcome to the Univariate Analysis Module! When it comes to understanding data, focusing on one thing at a time is key. It's all about looking closely at one variable at a time, helping us uncover important patterns and insights. Think of it as the first step in exploring data, like peeling back layers to reveal what's underneath and discover the secrets hidden within your data!.</p>",
             unsafe_allow_html=True,
         )
         with st.expander(label = "What is the overall dimensionality of the dataset ?"):
             st.write(df.shape,"Which means there are around 17k rows and 10 features")
         with st.expander(label = "What's the count of categorical/numerical features in our data ?"):
-            st.write("All the 10 features are categorical in nature, but out of all 3 features are ordinal features,1 is nominal feature and remaining 6 are simple binary categorical features")
+            st.write("All the 8 features are categorical in nature, but out of all 3 features are ordinal features,1 is nominal feature and remaining 4 are simple binary categorical features")
 
     pie_col1, pie_col2,pie_col3 = st.columns(spec=(1,1,1), gap="large")
 
@@ -65,46 +107,35 @@ def univariate_analysis(df):
 
 
     # Create column layout
-    bar_col1, bar_col2, bar_col3, bar_col4 = st.columns(spec=(1, 1, 1, 1), gap="large")
+    bar_col1, bar_col2, bar_col3 = st.columns(spec=(1, 1, 1), gap="large")
 
     # Plot bar plot for has_company_logo
     with bar_col1:
         fig5 = px.bar(df['has_company_logo'].value_counts().reset_index(), x='has_company_logo', y='count',
                       labels={'index': 'Has Company Logo', 'has_company_logo': 'Count'},
-                      title='Distribution of Has Company Logo')
+                      title='Distribution of Has Company Logo', width=200)
         st.plotly_chart(fig5, use_container_width=True)
 
-    # Plot bar plot for has_questions
-    with bar_col2:
-        fig6 = px.bar(df['has_questions'].value_counts().reset_index(), x='has_questions', y='count',
-                      labels={'index': 'Has Questions', 'has_questions': 'Count'},
-                      title='Distribution of Has Questions')
-        st.plotly_chart(fig6, use_container_width=True)
-
     # Plot bar plot for Salary_range_provided
-    with bar_col3:
+    with bar_col2:
         fig7 = px.bar(df['Salary_range_provided'].value_counts().reset_index(), x='Salary_range_provided', y='count',
                       labels={'index': 'Salary Range Provided', 'Salary_range_provided': 'Count'},
-                      title='Distribution of Salary Range Provided')
+                      title='Distribution of Salary Range Provided', width=200)
         st.plotly_chart(fig7, use_container_width=True)
 
     # Plot bar plot for department_mentioned
-    with bar_col4:
+    with bar_col3:
         fig8 = px.bar(df['department_mentioned'].value_counts().reset_index(), x='department_mentioned', y='count',
                       labels={'index': 'Department Mentioned', 'department_mentioned': 'Count'},
-                      title='Distribution of Department Mentioned')
+                      title='Distribution of Department Mentioned', width=200)
         st.plotly_chart(fig8, use_container_width=True)
 
 
     # Calculate value counts for the industry feature
-    value_counts = df['industry'].value_counts().reset_index()
-    value_counts.columns = ['industry', 'count']
-
-    # Filter values with count >= 100
-    value_counts_filtered = value_counts[value_counts['count'] >= 100]
+    ind_counts_filtered = pd.read_csv("Dataset/Industry_counts.csv")
 
     # Create bubble plot
-    fig = px.scatter(value_counts_filtered, x='industry', y=value_counts_filtered.index, size='count',
+    fig = px.scatter(ind_counts_filtered, x='industry', y=ind_counts_filtered.index, size='count',
                      labels={'industry': 'Industry', 'count': 'Count'},
                      title='Understanding the frequency of industry domains',
                      size_max=50)
@@ -119,7 +150,7 @@ def univariate_analysis(df):
 
 
 
-def multivariate_analysis(df):
+def multivariate_analysis(processed_df):
     st.markdown(
         "<h2 style='text-align: left; font-size: 40px; '>Multivariate Analysis</h1>",
         unsafe_allow_html=True,
@@ -130,37 +161,44 @@ def multivariate_analysis(df):
 
         # Stacked Bar Chart for Employment Type
         with st.container():
-            st.header('Employment Type')
-            fig1 = px.histogram(df, x='employment_type', color='fraudulent', barmode='group',
-                                title='Fraudulent vs Non-Fraudulent Postings by Employment Type',
-                                labels={'fraudulent': 'Fraudulent'})
-            st.plotly_chart(fig1, use_container_width=True)
+            pivot = processed_df.pivot_table(index='employment_type', columns='required_experience', values='fraudulent',
+                                     aggfunc='mean')
+            # Plot heatmap
+            fig = px.imshow(pivot, labels={'color': 'Fraud Rate'},
+                            title='Heatmap of Fraud by Employment Type and Experience Level')
+            st.plotly_chart(fig)
 
-        # Stacked Bar Chart for Company Logo Presence
-        with st.container():
-            st.header('Company Logo Presence')
-            fig2 = px.histogram(df, x='has_company_logo', color='fraudulent', barmode='group',
-                                title='Fraudulent vs Non-Fraudulent Postings by Company Logo Presence',
-                                labels={'has_company_logo': 'Has Company Logo', 'fraudulent': 'Fraudulent'})
-            st.plotly_chart(fig2, use_container_width=True)
+
+
 
         # Stacked Bar Chart for Required Education
         with st.container():
-            st.header('Required Education')
-            fig3 = px.histogram(df, x='required_education', color='fraudulent', barmode='group',
-                                title='Fraudulent vs Non-Fraudulent Postings by Required Education',
-                                labels={'required_education': 'Required Education', 'fraudulent': 'Fraudulent'})
-            st.plotly_chart(fig3, use_container_width=True)
+            # Group by telecommuting and company logo
+            grouped = processed_df.groupby(['telecommuting', 'has_company_logo']).mean().reset_index()
+
+            # Plot grouped bar chart
+            fig = px.bar(grouped, x='has_company_logo', y='fraudulent', color='telecommuting', barmode='group',
+                         title='Grouped Bar Chart of Fraud by Telecommuting and Company Logo')
+            st.plotly_chart(fig)
 
         # Stacked Bar Chart for Required Experience
         with st.container():
-            st.header('Required Experience')
-            fig4 = px.histogram(df, x='required_experience', color='fraudulent', barmode='group',
-                                title='Fraudulent vs Non-Fraudulent Postings by Required Experience',
-                                labels={'required_experience': 'Required Experience', 'fraudulent': 'Fraudulent'})
-            st.plotly_chart(fig4, use_container_width=True)
+            # Plot scatter plot matrix
+            fig = px.scatter_matrix(processed_df, dimensions=['department_mentioned', 'Salary_range_provided'],
+                                    color='fraudulent',
+                                    title='Scatter Plot Matrix of Fraud by Department Mentioned and Salary Range Provided')
+            st.plotly_chart(fig)
 
-
+    with col2:
+        pass
+        # with st.container():
+        #     # Plot facet grid (using scatter plot with facet row and facet col)
+        #     fig = px.scatter(processed_df, x='telecommuting', y='fraudulent', facet_row='required_experience',
+        #                      facet_col='required_education', color='fraudulent',
+        #                      title='Facet Grid of Fraud by Experience, Education, and Telecommuting')
+        #
+        #     # Streamlit
+        #     st.plotly_chart(fig)
 
 
 def feature_selection(df):
@@ -257,19 +295,85 @@ def feature_selection(df):
 
 
 
+def model_performance():
+    st.markdown(
+        "<h2 style='text-align: left; font-size: 40px; '>Model Performance</h1>",
+        unsafe_allow_html=True,
+    )
+    #
+
+    col1,col2 = st.columns(spec=(1, 1), gap="large")
+    with col1:
+        y_true = np.array([0, 1, 0, 1, 1, 0, 0, 1])
+        y_pred = np.array([0, 1, 0, 0, 1, 1, 0, 1])
+
+        # Compute confusion matrix
+        cm = np.zeros((2, 2))
+        for true, pred in zip(y_true, y_pred):
+            cm[true, pred] += 1
+
+        # Create Plotly heatmap
+        fig = ff.create_annotated_heatmap(
+            z=cm,
+            x=['Predicted Negative', 'Predicted Positive'],
+            y=['Actual Negative', 'Actual Positive'],
+            colorscale='Blues'
+        )
+
+        # Update layout
+        fig.update_layout(title='Confusion Matrix', xaxis_title='Predicted label', yaxis_title='True label')
+
+        # Display plot
+        st.plotly_chart(fig, use_container_width=True)
+
+    with col2:
+        y_true = np.array([0, 1, 0, 1, 1, 0, 0, 1])
+        y_prob = np.array([0.1, 0.9, 0.3, 0.7, 0.6, 0.2, 0.4, 0.8])
+
+        # Compute ROC curve and AUC
+        fpr, tpr, thresholds = roc_curve(y_true, y_prob)
+        roc_auc = auc(fpr, tpr)
+
+        # Create Plotly figure
+        fig = go.Figure()
+
+        # Add ROC curve
+        fig.add_trace(go.Scatter(x=fpr, y=tpr, mode='lines', line=dict(color='blue', width=2),
+                                 name=f'ROC Curve (AUC={roc_auc:.2f})'))
+        # Add random guess line
+        fig.add_shape(type='line', x0=0, y0=0, x1=1, y1=1, line=dict(color='black', width=1, dash='dash'),
+                      name='Random Guess')
+
+        # Update layout
+        fig.update_layout(title='Receiver Operating Characteristic (ROC) Curve',
+                          xaxis_title='False Positive Rate (FPR)',
+                          yaxis_title='True Positive Rate (TPR)',
+                          xaxis=dict(range=[0, 1], constrain='domain'),
+                          yaxis=dict(range=[0, 1], scaleanchor="x", scaleratio=1),
+                          width=800, height=600)
+
+        # Display plot
+        st.plotly_chart(fig, use_container_width=True)
+
+
+
 def visualization():
 
     # Calling the function to load the dataframe
     df = load_dataset()
+    temp_df = back_encoding(df.copy())
 
     # Calling function for doing univariate analysis
-    univariate_analysis(df)
+    univariate_analysis(temp_df)
 
-    # Calling function for diong multivarite analysis
-    multivariate_analysis(df)
+    # Calling function for doing multivariate analysis
+    #multivariate_analysis(df)
 
     # Feature selection charts
     feature_selection(df)
+
+    # Calling function for showing the performance
+    model_performance()
 
 
 visualization()
