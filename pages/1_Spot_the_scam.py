@@ -1,15 +1,18 @@
 import streamlit as st
+import numpy as np
 import pandas as pd
 import plotly.express as px
 import xgboost as xgb
 import tensorflow as tf
 import pickle
+import joblib
 import re
 import string
 import nltk
 from nltk.tokenize import word_tokenize
 import os
 from dotenv import load_dotenv
+
 load_dotenv()
 
 st.markdown(
@@ -33,9 +36,10 @@ with open("artifacts/stop_words.pkl", "rb") as f:
 
 
 @st.cache_resource
-def load_model_xgb():
-    xgb_model = xgb.Booster(model_file="artifacts/xgboost_classifier_model.bin")
-    return xgb_model
+def load_model_gbc():
+    classifier = joblib.load('artifacts/GB_classifier_model.pkl')
+    return classifier
+
 
 
 @st.cache_resource
@@ -66,13 +70,15 @@ def load_encodings_pipeline():
 
 
 def create_non_text_features(
-    has_company_logo,
-    Salary_range_provided,
-    department_mentioned,
-    employment_type,
-    required_experience,
-    required_education,
-    industry,
+        telecommuting,
+        has_company_logo,
+        has_questions,
+        employment_type,
+        required_experience,
+        required_education,
+        industry,
+        Salary_range_provided,
+        department_mentioned,
 ):
     """
     This method will take the input variables and will return a DataFrame with input feature values.
@@ -82,13 +88,15 @@ def create_non_text_features(
 
     # Create a dictionary with your input variables
     data = {
+        "telecommuting" : [yes_no_mapping[telecommuting]],
         "has_company_logo": [yes_no_mapping[has_company_logo]],
-        "Salary_range_provided": [yes_no_mapping[Salary_range_provided]],
-        "department_mentioned": [yes_no_mapping[department_mentioned]],
+        "has_questions": [yes_no_mapping[has_questions]],
         "employment_type": [employment_type],
         "required_experience": [required_experience],
         "required_education": [required_education],
         "industry": [industry],
+        "Salary_range_provided": [yes_no_mapping[Salary_range_provided]],
+        "department_mentioned": [yes_no_mapping[department_mentioned]],
     }
 
     # Create a DataFrame from the dictionary
@@ -119,7 +127,6 @@ def process_text(input_data):
 
     # Tokenizing the words in the strings
     tokens = tf.strings.split(no_punctuation)
-
     filtered_tokens = tf.map_fn(remove_stopwords, tokens, fn_output_signature=tf.bool)
 
     # Filter tokens based on the boolean mask
@@ -148,11 +155,10 @@ def process_predict_text_feature(text):
     predictions = blstm_model.predict(Input_text)
 
     # Extracting the predicted class index (as a scalar)
-    # predicted_class_index = np.argmax(predictions, axis=1)[0]  # Access the first element
+    predicted_class_index = np.argmax(predictions, axis=1)[0]  # Access the first element
 
     # Mapping the index to the corresponding label
     # return class_labels[predicted_class_index]
-    return predictions
 
 
 def process_predict_non_text_feature(df):
@@ -180,21 +186,16 @@ def process_predict_non_text_feature(df):
     Input = Scaling_pipeline.transform(df)
 
     # Loading the classifier
-    classifier1 = load_model_xgb()
+    classifier1 = load_model_gbc()
 
     # Assuming 'Input' is your numpy.ndarray
-    data_matrix = xgb.DMatrix(Input)
-    model1_output = classifier1.predict(data_matrix)
+    model1_output = classifier1.predict(Input)
     return model1_output
-
-
-def text_feature():
-    pass
 
 
 def spot_scam_page():
     st.markdown(
-        "<h1 style='text-align: center; font-size: 60px;'>Spot the Scam🕵️</h1>",
+        "<h1 style='text-align: center; font-size: 55px;'>Spot the Scam🕵️</h1>",
         unsafe_allow_html=True,
     )
     # st.write("adsfsa jjajdsjfk sadf jlskdjfklsaj lkfsldkjglsk dg jsj dlkgjsd lgs")
@@ -207,7 +208,7 @@ def spot_scam_page():
     configuration_col, input_col = st.columns(spec=(0.8, 2), gap="large")
     with configuration_col:
         st.markdown(
-            "<p class='center' style='font-size: 18px; background-color: #CEFCBA; padding:1rem;'>To obtain predictions regarding the current state of the plant, you need to upload the image below. This image should ideally capture the entire plant, ensuring clar.</p>",
+            "<p class='center' style='font-size: 18px; background-color: #C3E8FF; padding:1rem;'>To obtain predictions regarding the current state of the plant, you need to upload the image below. This image should ideally capture the entire plant, ensuring clar.</p>",
             unsafe_allow_html=True,
         )
         model_output_wt = st.slider(
@@ -219,7 +220,7 @@ def spot_scam_page():
             key="facilities_recommendation_wt",
             label_visibility="collapsed",
         )
-        data = {
+        pie_data = {
             "Categories": ["Model1", "Model2"],
             "Weights": [
                 model_output_wt,
@@ -228,12 +229,12 @@ def spot_scam_page():
         }
 
         # Create a DataFrame from the data
-        df = pd.DataFrame(data)
-        custom_colors = ["#AEF359", "#03C04A"]
+        pie_df = pd.DataFrame(pie_data)
+        custom_colors = ["#C3E8FF", "#43B7FF"]
 
         # Create a dynamic pie chart using Plotly Express
         fig = px.pie(
-            df,
+            pie_df,
             names="Categories",
             values="Weights",
             color_discrete_sequence=custom_colors,
@@ -293,50 +294,63 @@ def spot_scam_page():
 
         with input_col2:
             industry = st.selectbox("Select the industry", (industry_types))
-            description = st.text_input("Enter the job description mentioned")
-            requirements = st.text_input("Enter the mentioned requirements in job post")
-            benefits = st.text_input(
-                "Enter benefits they are claiming they will provide"
+            telecommuting = st.selectbox(
+                "Did they have telecommuting in the job listing?",
+                ("Yes", "No"),
             )
+            has_questions = st.selectbox(
+                "Do they have questions in the job listing?",
+                ("Yes", "No"),
+            )
+            # description = st.text_input("Enter the job description mentioned")
+            # requirements = st.text_input("Enter the mentioned requirements in job post")
+            # benefits = st.text_input(
+            #     "Enter benefits they are claiming they will provide"
+            # )
 
             st.write("***")
             predict_bt = st.button("Analyze job post🔎", use_container_width=True)
             if predict_bt:
-
                 if any(
                     [
+                        telecommuting == None,
+                        has_company_logo == None,
+                        has_questions == None,
                         employment_type == None,
                         required_experience == None,
                         required_education == None,
-                        has_company_logo == None,
-                        department_mentioned == None,
-                        Salary_range_provided == None,
                         industry == None,
-                        description == "",
-                        requirements == "",
-                        benefits == "",
+                        Salary_range_provided == None,
+                        department_mentioned == None,
                     ]
                 ):
                     st.error("Please enter all the fields")
 
                 else:
-
                     # Calling function to get the non text features dataframe
                     model1_input_df = create_non_text_features(
+                        telecommuting,
                         has_company_logo,
-                        Salary_range_provided,
-                        department_mentioned,
+                        has_questions,
                         employment_type,
                         required_experience,
                         required_education,
                         industry,
+                        Salary_range_provided,
+                        department_mentioned,
                     )
-                    model1_output = process_predict_non_text_feature(model1_input_df)
-                    st.write(model1_output)
 
-                    raw_text = description + " " + requirements + " " + benefits
-                    model2_output = process_predict_text_feature(raw_text)
-                    st.write(model2_output)
+                    model1_output = process_predict_non_text_feature(model1_input_df)
+                    if model1_output == 1.0:
+                        st.error("The job listing is likely fake. Please proceed with caution.")
+                    else:
+                        st.success("The job listing appears to be genuine.")
+                    #st.write("Non text feature", model1_output)
+
+                    # raw_text = description + " " + requirements + " " + benefits
+                    # model2_output = process_predict_text_feature(raw_text)
+                    # st.write("Model 2 output", model2_output)
+                    # st.write(model2_output)
                     # model2_input_df = create_text_feature(description,requirements,benefits)
 
 
