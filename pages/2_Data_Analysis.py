@@ -25,13 +25,13 @@ st.markdown(
 
 @st.cache_resource
 def load_dataset():
-    df = pd.read_csv("Dataset/Job_features_NText_.csv")
+    df = pd.read_csv("Dataset/Fake_job_Non_Text.csv")
     return df
 
 
 def back_encoding(df):
 
-    cols = ['has_company_logo', 'Salary_range_provided', 'department_mentioned']
+    cols = ['telecommuting','has_questions','has_company_logo','Salary_range_provided','department_mentioned']
     for col in cols:
         df[col] = df[col].replace({1: 'Yes', 0: 'No'})
 
@@ -150,55 +150,73 @@ def univariate_analysis(df):
 
 
 
-def multivariate_analysis(processed_df):
+def multivariate_analysis(df):
     st.markdown(
-        "<h2 style='text-align: left; font-size: 40px; '>Multivariate Analysis</h1>",
+        "<h2 style='text-align: left; font-size: 40px; '>Uncovering the Truth</h1>",
         unsafe_allow_html=True,
     )
 
-    col1,col2 = st.columns(spec=(1, 1), gap="small")
+    # Create columns layout
+    col1, col2 = st.columns(spec=(1, 1), gap="large")
+
+    # Question 1: Is there a significant difference in the likelihood of being ever married between males and females?
     with col1:
+        st.markdown(
+            "<p style='font-size:17px; background-color: #C3E8FF; padding: 0.5rem'><strong>Question 1:</strong> How does the presence of a company logo correlate with the offering of telecommuting?</p>",
+            unsafe_allow_html=True)
 
-        # Stacked Bar Chart for Employment Type
-        with st.container():
-            pivot = processed_df.pivot_table(index='employment_type', columns='required_experience', values='fraudulent',
-                                     aggfunc='mean')
-            # Plot heatmap
-            fig = px.imshow(pivot, labels={'color': 'Fraud Rate'},
-                            title='Heatmap of Fraud by Employment Type and Experience Level')
-            st.plotly_chart(fig)
+    with col1:
+        st.markdown(
+            "<p style='font-size:17px; background-color: #C3E8FF; padding: 0.5rem'><strong>Question 1:</strong> Are job postings with questions correlated with specific employment types and industries?</p>",
+            unsafe_allow_html=True)
+
+    with col1:
+        st.markdown(
+            "<p style='font-size:17px; background-color: #C3E8FF; padding: 0.5rem'><strong>Question 1:</strong> Do job postings with salary ranges provided differ significantly based on the required experience level and education requirements?</p>",
+            unsafe_allow_html=True)
+
+    with col1:
+        st.markdown(
+            "<p style='font-size:17px; background-color: #C3E8FF; padding: 0.5rem'><strong>Question 1:</strong> How does the department mention in job postings relate to the presence of a company logo and the offering of telecommuting?</p>",
+            unsafe_allow_html=True)
+
+    with col1:
+        st.markdown(
+            "<p style='font-size:17px; background-color: #C3E8FF; padding: 0.5rem'><strong>Question 1:</strong> Are job postings marked as fraudulent associated with specific combinations of features such as required experience, industry, and salary range provided?</p>",
+            unsafe_allow_html=True)
 
 
 
-
-        # Stacked Bar Chart for Required Education
-        with st.container():
-            # Group by telecommuting and company logo
-            grouped = processed_df.groupby(['telecommuting', 'has_company_logo']).mean().reset_index()
-
-            # Plot grouped bar chart
-            fig = px.bar(grouped, x='has_company_logo', y='fraudulent', color='telecommuting', barmode='group',
-                         title='Grouped Bar Chart of Fraud by Telecommuting and Company Logo')
-            st.plotly_chart(fig)
-
-        # Stacked Bar Chart for Required Experience
-        with st.container():
-            # Plot scatter plot matrix
-            fig = px.scatter_matrix(processed_df, dimensions=['department_mentioned', 'Salary_range_provided'],
-                                    color='fraudulent',
-                                    title='Scatter Plot Matrix of Fraud by Department Mentioned and Salary Range Provided')
-            st.plotly_chart(fig)
 
     with col2:
-        pass
-        # with st.container():
-        #     # Plot facet grid (using scatter plot with facet row and facet col)
-        #     fig = px.scatter(processed_df, x='telecommuting', y='fraudulent', facet_row='required_experience',
-        #                      facet_col='required_education', color='fraudulent',
-        #                      title='Facet Grid of Fraud by Experience, Education, and Telecommuting')
-        #
-        #     # Streamlit
-        #     st.plotly_chart(fig)
+        st.markdown(
+            "<p style='font-size:17px; background-color: #C3E8FF; padding: 0.5rem'><strong>Question 1:</strong> Is there a correlation between the availability of telecommuting options and the required education level, considering the industry of the job posting?</p>",
+            unsafe_allow_html=True)
+
+    with col2:
+        st.markdown(
+            "<p style='font-size:17px; background-color: #C3E8FF; padding: 0.5rem'><strong>Question 1:</strong> Do job postings with provided salary ranges differ significantly based on the combination of required experience and the presence of questions for applicants?</p>",
+            unsafe_allow_html=True)
+
+    with col2:
+        st.markdown(
+            "<p style='font-size:17px; background-color: #C3E8FF; padding: 0.5rem'><strong>Question 1:</strong> How does the department mentioned in job postings relate to the offered employment types and the presence of a company logo?</p>",
+            unsafe_allow_html=True)
+
+    with col2:
+        st.markdown(
+            "<p style='font-size:17px; background-color: #C3E8FF; padding: 0.5rem'><strong>Question 1:</strong> Are job postings with fraudulent labels associated with specific combinations of employment types, industries, and the provision of salary ranges?</p>",
+            unsafe_allow_html=True)
+
+    with col2:
+        st.markdown(
+            "<p style='font-size:17px; background-color: #C3E8FF; padding: 0.5rem'><strong>Question 1:</strong> Does the correlation between required education level and industry differ based on the presence of questions for applicants and the offering of telecommuting?</p>",
+            unsafe_allow_html=True)
+
+
+
+
+
 
 
 def feature_selection(df):
@@ -253,14 +271,14 @@ def feature_selection(df):
         'Features': ['telecommuting', 'has_company_logo', 'has_questions', 'Salary_range_provided',
                      'department_mentioned', 'employment_type', 'required_experience', 'required_education',
                      'industry'],
-        'RF_Importance': [0.011477, 0.067639, 0.020699, 0.019789, 0.023458, 0.121970, 0.247988,
-                          0.182749, 0.304231],
-        'GB_Importance': [0.001457, 0.159125, 0.007848, 0.003218, 0.008740, 0.251612, 0.422582,
-                          0.056006, 0.089412],
-        'Perm_importance': [-0.007493, 0.018411, 0.011561, 0.008778, 0.030614, 0.167202, 0.398844,
-                            0.107686, 0.264397],
-        'RFE_importance': [0.011477, 0.067639, 0.020699, 0.019789, 0.023458, 0.121970, 0.247988,
-                           0.182749, 0.304231]
+        'RF_Importance': [0.130345, 0.214610, 0.036226, 0.060078, 0.023363,
+                      0.289642, 0.054171, 0.061904, 0.129662],
+        'GB_Importance': [0.038641, 0.051366, 0.049478, 0.057086, 0.013677,
+                      0.614480, 0.073508, 0.032882, 0.068883],
+        'Perm_importance': [0.025259, 0.137198, 0.057166, 0.093592, 0.007179,
+                        0.482584, 0.157671, 0.006381, 0.032970],
+        'RFE_importance': [0.130345, 0.214610, 0.036226, 0.060078, 0.023363,
+                       0.289642, 0.054171, 0.061904, 0.129662]
     }
     df = pd.DataFrame(data)
 
@@ -295,65 +313,6 @@ def feature_selection(df):
 
 
 
-def model_performance():
-    st.markdown(
-        "<h2 style='text-align: left; font-size: 40px; '>Model Performance</h1>",
-        unsafe_allow_html=True,
-    )
-    #
-
-    col1,col2 = st.columns(spec=(1, 1), gap="large")
-    with col1:
-        y_true = np.array([0, 1, 0, 1, 1, 0, 0, 1])
-        y_pred = np.array([0, 1, 0, 0, 1, 1, 0, 1])
-
-        # Compute confusion matrix
-        cm = np.zeros((2, 2))
-        for true, pred in zip(y_true, y_pred):
-            cm[true, pred] += 1
-
-        # Create Plotly heatmap
-        fig = ff.create_annotated_heatmap(
-            z=cm,
-            x=['Predicted Negative', 'Predicted Positive'],
-            y=['Actual Negative', 'Actual Positive'],
-            colorscale='Blues'
-        )
-
-        # Update layout
-        fig.update_layout(title='Confusion Matrix', xaxis_title='Predicted label', yaxis_title='True label')
-
-        # Display plot
-        st.plotly_chart(fig, use_container_width=True)
-
-    with col2:
-        y_true = np.array([0, 1, 0, 1, 1, 0, 0, 1])
-        y_prob = np.array([0.1, 0.9, 0.3, 0.7, 0.6, 0.2, 0.4, 0.8])
-
-        # Compute ROC curve and AUC
-        fpr, tpr, thresholds = roc_curve(y_true, y_prob)
-        roc_auc = auc(fpr, tpr)
-
-        # Create Plotly figure
-        fig = go.Figure()
-
-        # Add ROC curve
-        fig.add_trace(go.Scatter(x=fpr, y=tpr, mode='lines', line=dict(color='blue', width=2),
-                                 name=f'ROC Curve (AUC={roc_auc:.2f})'))
-        # Add random guess line
-        fig.add_shape(type='line', x0=0, y0=0, x1=1, y1=1, line=dict(color='black', width=1, dash='dash'),
-                      name='Random Guess')
-
-        # Update layout
-        fig.update_layout(title='Receiver Operating Characteristic (ROC) Curve',
-                          xaxis_title='False Positive Rate (FPR)',
-                          yaxis_title='True Positive Rate (TPR)',
-                          xaxis=dict(range=[0, 1], constrain='domain'),
-                          yaxis=dict(range=[0, 1], scaleanchor="x", scaleratio=1),
-                          width=800, height=600)
-
-        # Display plot
-        st.plotly_chart(fig, use_container_width=True)
 
 
 
@@ -367,13 +326,10 @@ def visualization():
     univariate_analysis(temp_df)
 
     # Calling function for doing multivariate analysis
-    #multivariate_analysis(df)
+    multivariate_analysis(temp_df)
 
     # Feature selection charts
     feature_selection(df)
-
-    # Calling function for showing the performance
-    model_performance()
 
 
 visualization()
