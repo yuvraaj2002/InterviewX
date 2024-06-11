@@ -6,6 +6,7 @@ from nltk.stem import WordNetLemmatizer
 import io
 import string
 import nltk
+import time
 import numpy as np
 from nltk.corpus import wordnet
 import re
@@ -56,7 +57,7 @@ def get_questions(text):
     template = """
             After reviewing the comprehensive details {resume_content} outlined in the candidate's resume, 
             please provide seven tailored questions that the candidate can anticipate, focusing specifically 
-            on their projects and experience. 
+            on their projects and experience.Return me python list of questions which I could iterate.
             """
 
     prompt = PromptTemplate(input_variables=["resume_content"], template=template)
@@ -163,6 +164,34 @@ def cosine_similarity(vec1, vec2):
     return 1 - cosine(vec1, vec2)
 
 
+def download_questions(questions_text):
+    """
+    Creates a text file with the given summary text and offers download.
+    """
+    # Generate unique filename
+    filename = f"Interview_Questions_{int(time.time())}.txt"
+
+    # Create the file and write the content
+    with open(filename, "w") as file:
+        file.write(questions_text)
+
+    # Set content_type and headers
+    content_type = "text/plain"
+    headers = {
+        "Content-Disposition": f"attachment; filename={filename}",
+        "Content-type": content_type,
+    }
+
+    # Use st.download_button to offer download
+    st.download_button(
+        "Download questions💾",
+        data=questions_text,
+        file_name=filename,
+        mime=content_type,
+        use_container_width=True,
+    )
+
+
 # State management
 if 'clean_text_resume' not in st.session_state:
     st.session_state.clean_text_resume = None
@@ -219,13 +248,12 @@ def resume_radar_page():
                         # Save clean_text_resume in session state
                         st.session_state.clean_text_resume = clean_text_resume
 
-    concent_button = st.button("Get tailored Interview questions as per your resume", use_container_width=True)
+    concent_button = st.button("Generate tailored Interview questions as per your resume", use_container_width=True)
     if concent_button:
         if st.session_state.clean_text_resume:
             questions = get_questions(st.session_state.clean_text_resume)
-            st.title("Top Interview Questions Tailored for You")
-            st.write(questions)
-            st.write("")
+            download_questions(questions)
+            st.write("***")
         else:
             st.error("Please analyze your resume first.")
 
