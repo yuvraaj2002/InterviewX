@@ -149,7 +149,6 @@ def univariate_analysis(df):
 
 
 
-
 def multivariate_analysis(df):
     st.markdown(
         "<h2 style='text-align: left; font-size: 40px; '>Uncovering the Truth</h1>",
@@ -162,65 +161,94 @@ def multivariate_analysis(df):
     # Question 1: Is there a significant difference in the likelihood of being ever married between males and females?
     with col1:
         st.markdown(
-            "<p style='font-size:17px; background-color: #C3E8FF; padding: 0.5rem'><strong>Question 1:</strong> How does the presence of a company logo correlate with the offering of telecommuting?</p>",
+            "<p style='font-size:17px; background-color: #C3E8FF; padding: 0.5rem'><strong>Question 1:</strong> How does telecommuting impact the likelihood of a job posting being fraudulent?</p>",
             unsafe_allow_html=True)
-        fig1 = px.imshow(df[['has_company_logo', 'telecommuting']].corr(), x=['Company Logo', 'Telecommuting'],
-                        y=['Telecommuting', 'Company Logo'])
+        fig1 = px.histogram(df, x='telecommuting', color='fraudulent', barmode='group',
+                            title='Impact of Telecommuting on Job Posting Fraudulence')
         st.plotly_chart(fig1)
 
     with col1:
         st.markdown(
-            "<p style='font-size:17px; background-color: #C3E8FF; padding: 0.5rem'><strong>Question 1:</strong> Are job postings with questions correlated with specific employment types and industries?</p>",
+            "<p style='font-size:17px; background-color: #C3E8FF; padding: 0.5rem'><strong>Question 2:</strong> What is the relationship between having a company logo and the probability of a job posting being fraudulent?</p>",
             unsafe_allow_html=True)
-        fig = px.bar(df, x='employment_type', color='industry', barmode='group')
-        st.plotly_chart(fig)
+        fig2 = px.histogram(df, x='has_company_logo', color='fraudulent', barmode='group',
+                            title='Impact of Company Logo on Job Posting Fraudulence')
+        st.plotly_chart(fig2)
 
     with col1:
         st.markdown(
-            "<p style='font-size:17px; background-color: #C3E8FF; padding: 0.5rem'><strong>Question 1:</strong> Do job postings with salary ranges provided differ significantly based on the required experience level and education requirements?</p>",
+            "<p style='font-size:17px; background-color: #C3E8FF; padding: 0.5rem'><strong>Question 3:</strong>How do job postings that include questions differ in terms of fraudulence compared to those that do not?</p>",
             unsafe_allow_html=True)
-        fig3 = px.scatter_matrix(df, dimensions=['Salary_range_provided', 'required_experience', 'required_education'])
+        fig3 = px.pie(df, names='has_questions', color='fraudulent',
+                      title='Impact of Including Questions on Job Posting Fraudulence', hole=0.3)
         st.plotly_chart(fig3)
 
 
+    with col1:
+        st.markdown(
+            "<p style='font-size:17px; background-color: #C3E8FF; padding: 0.5rem'><strong>Question 4:</strong> Is there a correlation between employment type and the likelihood of a job posting being fraudulent?</p>",
+            unsafe_allow_html=True)
+        fig4 = px.histogram(df, x='employment_type', color='fraudulent', barmode='group',
+                            title='Impact of Employment Type on Job Posting Fraudulence')
+        st.plotly_chart(fig4)
+
+
+    with col2:
+        st.markdown(
+            "<p style='font-size:17px; background-color: #C3E8FF; padding: 0.5rem'><strong>Question 5:</strong> Does providing salary range information affect the likelihood of a job posting being fraudulent?</p>",
+            unsafe_allow_html=True)
+        fig5 = px.histogram(df, x='Salary_range_provided', color='fraudulent', barmode='group',
+                            title='Impact of Providing Salary Range on Job Posting Fraudulence')
+        st.plotly_chart(fig5)
+
+
+    with col2:
+        st.markdown(
+            "<p style='font-size:17px; background-color: #C3E8FF; padding: 0.5rem'><strong>Question 6:</strong>Does the required experience level influence the likelihood of a job posting being fraudulent?</p>",
+            unsafe_allow_html=True)
+        fig6 = px.violin(df, x='fraudulent', y='required_experience', color='fraudulent',
+                         title='Required Experience Level and Job Posting Fraudulence')
+        st.plotly_chart(fig6)
+
+
+    with col2:
+        st.markdown(
+            "<p style='font-size:17px; background-color: #C3E8FF; padding: 0.5rem'><strong>Question 7:</strong> Which industries have higher proportions of fraudulent job postings?</p>",
+            unsafe_allow_html=True)
+        fig7 = px.histogram(df, x='industry', color='fraudulent', barmode='group',
+                            title='Industry and Job Posting Fraudulence')
+        st.plotly_chart(fig7)
+
+    with col2:
+        st.markdown(
+            "<p style='font-size:17px; background-color: #C3E8FF; padding: 0.5rem'><strong>Question 8:</strong> How does the required education level correlate with the fraudulence of job postings?</p>",
+            unsafe_allow_html=True)
+        fig8 = px.violin(df, x='fraudulent', y='required_education', color='fraudulent',
+                         title='Required Education Level and Job Posting Fraudulence')
+        st.plotly_chart(fig8)
+
+
+
+
+
+def check(df):
+    st.markdown(
+        "<h2 style='text-align: left; font-size: 40px; '>Uncovering the Truth</h1>",
+        unsafe_allow_html=True,
+    )
+
+    # Create columns layout
+    col1, col2 = st.columns(spec=(1, 1), gap="large")
 
     with col1:
         st.markdown(
-            "<p style='font-size:17px; background-color: #C3E8FF; padding: 0.5rem'><strong>Question 1:</strong> How does the department mention in job postings relate to the presence of a company logo and the offering of telecommuting?</p>",
+            "<p style='font-size:17px; background-color: #C3E8FF; padding: 0.5rem'><strong>Question 1:</strong> Can you tell me how working remotely, having a company logo, and asking questions in a job posting together affect the chances of it being fake?</p>",
             unsafe_allow_html=True)
+        fig1 = px.scatter_3d(df, x='telecommuting', y='has_company_logo', z='has_questions', color='fraudulent',
+                            opacity=0.7,
+                            title="")
+        st.plotly_chart(fig1)
 
-    with col1:
-        st.markdown(
-            "<p style='font-size:17px; background-color: #C3E8FF; padding: 0.5rem'><strong>Question 1:</strong> Are job postings marked as fraudulent associated with specific combinations of features such as required experience, industry, and salary range provided?</p>",
-            unsafe_allow_html=True)
-
-
-
-
-    with col2:
-        st.markdown(
-            "<p style='font-size:17px; background-color: #C3E8FF; padding: 0.5rem'><strong>Question 1:</strong> Is there a correlation between the availability of telecommuting options and the required education level, considering the industry of the job posting?</p>",
-            unsafe_allow_html=True)
-
-    with col2:
-        st.markdown(
-            "<p style='font-size:17px; background-color: #C3E8FF; padding: 0.5rem'><strong>Question 1:</strong> Do job postings with provided salary ranges differ significantly based on the combination of required experience and the presence of questions for applicants?</p>",
-            unsafe_allow_html=True)
-
-    with col2:
-        st.markdown(
-            "<p style='font-size:17px; background-color: #C3E8FF; padding: 0.5rem'><strong>Question 1:</strong> How does the department mentioned in job postings relate to the offered employment types and the presence of a company logo?</p>",
-            unsafe_allow_html=True)
-
-    with col2:
-        st.markdown(
-            "<p style='font-size:17px; background-color: #C3E8FF; padding: 0.5rem'><strong>Question 1:</strong> Are job postings with fraudulent labels associated with specific combinations of employment types, industries, and the provision of salary ranges?</p>",
-            unsafe_allow_html=True)
-
-    with col2:
-        st.markdown(
-            "<p style='font-size:17px; background-color: #C3E8FF; padding: 0.5rem'><strong>Question 1:</strong> Does the correlation between required education level and industry differ based on the presence of questions for applicants and the offering of telecommuting?</p>",
-            unsafe_allow_html=True)
 
 
 
