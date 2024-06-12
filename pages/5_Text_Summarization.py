@@ -168,6 +168,7 @@ def text_summarization_page():
                     st.markdown("<h3>Summarized content️️</h3>", unsafe_allow_html=True)
                     markdown_text = f"<p style='font-size: 20px;'>{summarized_text}</p>"
                     st.markdown(markdown_text, unsafe_allow_html=True)
+                    st.write("")
                 except Exception as e:
                     st.error(
                         f"Error summarizing the content due to wrong url or paywall: {e}"
@@ -180,8 +181,11 @@ def text_summarization_page():
             unsafe_allow_html=True,
         )
 
-
-        st.link_button("Original Blog Post (Anti Scaraping disabled)", "https://www.codecontent.net/post/introduction-to-llama",use_container_width=True)
+        st.link_button(
+            "Original Blog Post (Anti Scaraping disabled)",
+            "https://www.codecontent.net/post/introduction-to-llama",
+            use_container_width=True,
+        )
 
         wordcnt_col1, wordcnt_col2 = st.columns(2, gap="large")
         if bool_summarized_content:
