@@ -164,16 +164,25 @@ def multivariate_analysis(df):
         st.markdown(
             "<p style='font-size:17px; background-color: #C3E8FF; padding: 0.5rem'><strong>Question 1:</strong> How does the presence of a company logo correlate with the offering of telecommuting?</p>",
             unsafe_allow_html=True)
+        fig1 = px.imshow(df[['has_company_logo', 'telecommuting']].corr(), x=['Company Logo', 'Telecommuting'],
+                        y=['Telecommuting', 'Company Logo'])
+        st.plotly_chart(fig1)
 
     with col1:
         st.markdown(
             "<p style='font-size:17px; background-color: #C3E8FF; padding: 0.5rem'><strong>Question 1:</strong> Are job postings with questions correlated with specific employment types and industries?</p>",
             unsafe_allow_html=True)
+        fig = px.bar(df, x='employment_type', color='industry', barmode='group')
+        st.plotly_chart(fig)
 
     with col1:
         st.markdown(
             "<p style='font-size:17px; background-color: #C3E8FF; padding: 0.5rem'><strong>Question 1:</strong> Do job postings with salary ranges provided differ significantly based on the required experience level and education requirements?</p>",
             unsafe_allow_html=True)
+        fig3 = px.scatter_matrix(df, dimensions=['Salary_range_provided', 'required_experience', 'required_education'])
+        st.plotly_chart(fig3)
+
+
 
     with col1:
         st.markdown(
@@ -326,7 +335,7 @@ def visualization():
     univariate_analysis(temp_df)
 
     # Calling function for doing multivariate analysis
-    multivariate_analysis(temp_df)
+    multivariate_analysis(df)
 
     # Feature selection charts
     feature_selection(df)
