@@ -1,6 +1,7 @@
 import streamlit as st
 import tensorflow as tf
 from tensorflow import keras
+import plotly.express as px
 import time
 
 st.markdown(
@@ -63,25 +64,20 @@ def segmentation_UI():
                 + "</p>",
                 unsafe_allow_html=True,
             )
-
-            # if index == 4:
-            #     tile.metric(
-            #         label="Similarity Score",
-            #         value=0,
-            #         delta="Base line score",
-            #     )
-            # else:
-            #     tile.metric(
-            #         label="Similarity Score",
-            #         value=round(facilities_results["SimilarityScore"][index], 3),
-            #         delta=round(
-            #             facilities_results["SimilarityScore"][index]
-            #             - baseline_similarity_score,
-            #             5,
-            #         ),
-            #     )
             index = index + 1
 
+        # Focusing on the questions
+        st.title("Questions")
+        st.markdown(
+            "<p style='font-size: 21px;'>Presenting the top five apartments meticulously curated for your consideration, derived from your selected apartment and the thoughtful configurations of our recommendation engine weights. We trust these recommendations will add value to your search and enhance yourand the thoughtful configurations of our recommendation engine weights. We trust these recommendations will add value to your search and enhance your experience in finding the ideal residence.</p>",
+            unsafe_allow_html=True,
+        )
+        df_col, pie_col = st.columns(spec=(2,1), gap="medium")
+        with pie_col:
+            values = [50, 30, 20, 40, 10]  # Example values for each category
+            fig = px.pie(names=que_categories, values=values, title='Question Categories Distribution')
+            fig.update_layout(title_font_size=24, legend=dict(x=0.85, y=0.85))
+            st.plotly_chart(fig, use_container_width=True)
     
     # loaded_model = keras.models.load_model("artifacts/Que_Classifier.keras")
     # st.write(loaded_model.summary())
