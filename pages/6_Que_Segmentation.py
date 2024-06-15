@@ -23,7 +23,7 @@ def segmentation_UI():
         unsafe_allow_html=True,
     )
     st.markdown(
-        "<p style='font-size: 21px; text-align: center;padding-left: 2rem;padding-right: 2rem;margin-bottom: 2rem;'>Welcome to QuestClassify, the ultimate tool for efficiently organizing and categorizing your questions. Simply input your questions, and our sophisticated neural network will classify each one into predefined categories: AI, Behavioural, CS Fundamentals, DSA (Data Structures and Algorithms), and System Design. QueryLabeler️ automatically segments and organizes your questions based on their labels, ensuring easy retrieval and utilization. After the segmentation process, you can conveniently download a ZIP folder containing separate files for each category, simplifying data management and enhancing accessibility.</p>",
+        "<p style='font-size: 21px; text-align: center;padding-left: 2rem;padding-right: 2rem;margin-bottom: 2rem;'>Welcome to QuestClassify, the ultimate tool for efficiently organizing and categorizing your questions. Whether you're managing survey responses, curating educational content, or handling a large database of FAQs, QuestClassify streamlines your workflow and enhances productivity. Simply input your questions, and our advanced neural network will accurately classify each one into predefined categories: AI, Behavioural, CS Fundamentals, DSA (Data Structures and Algorithms), and System Design. QuestClassify automatically segments and organizes your questions based on their labels, ensuring easy retrieval and utilization. After the segmentation process, conveniently download a ZIP folder containing separate files for each category, simplifying data management and enhancing accessibility.</p>",
         unsafe_allow_html=True,
     )
 
@@ -50,6 +50,37 @@ def segmentation_UI():
         time.sleep(1)
         bar.empty()
         st.success("Segmentation Done succesfully")
+        st.write("")
+
+        que_categories = ['Artificial Intelligence', 'Behavioural', 'CS fundamentals', 'Data structures and Algorithm', 'System Design']
+        row = st.columns(5)
+        index = 0
+        for col in row:
+            tile = col.container(height=200)  # Adjust the height as needed
+            tile.markdown(
+                "<p style='text-align: center; font-size: 18px; background-color: #C3E8FF;padding:0.5rem;'>"
+                + str(que_categories[index])
+                + "</p>",
+                unsafe_allow_html=True,
+            )
+
+            # if index == 4:
+            #     tile.metric(
+            #         label="Similarity Score",
+            #         value=0,
+            #         delta="Base line score",
+            #     )
+            # else:
+            #     tile.metric(
+            #         label="Similarity Score",
+            #         value=round(facilities_results["SimilarityScore"][index], 3),
+            #         delta=round(
+            #             facilities_results["SimilarityScore"][index]
+            #             - baseline_similarity_score,
+            #             5,
+            #         ),
+            #     )
+            index = index + 1
 
     
     # loaded_model = keras.models.load_model("artifacts/Que_Classifier.keras")
