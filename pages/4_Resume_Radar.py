@@ -3,6 +3,8 @@ import base64
 from io import BytesIO
 from PyPDF2 import PdfReader
 from nltk.stem import WordNetLemmatizer
+import tensorflow as tf
+import tensorflow_hub as hub
 import io
 import os
 import string
@@ -48,17 +50,18 @@ stop_words = set(nltk.corpus.stopwords.words("english"))
 
 
 @st.cache_resource
-def load_model():
+def load_models():
     llm = ChatGoogleGenerativeAI(
         model="gemini-pro", google_api_key=os.getenv("GEMINI_API_KEY")
     )
-    embedding_model = OllamaEmbeddings(model="jina/jina-embeddings-v2-base-de")
+    embedding_model = KeyedVectors.load_word2vec_format(
+        "artifacts/GoogleNews-vectors-negative300.bin.gz", binary=True, limit=500000
+    )
     return llm, embedding_model
 
 
-def get_questions(text):
+def get_questions(text,llm):
 
-    llm = load_model()
     template = """
             After reviewing the comprehensive details {resume_content} outlined in the candidate's resume, 
             please provide seven tailored questions that the candidate can anticipate, focusing specifically 
@@ -73,13 +76,6 @@ def get_questions(text):
     return response
 
 
-@st.cache_resource
-def load_w2v():
-    W2V_model = KeyedVectors.load_word2vec_format(
-        "artifacts/GoogleNews-vectors-negative300.bin.gz", binary=True, limit=500000
-    )
-    return W2V_model
-
 
 def clean_data(text):
     """
@@ -92,6 +88,8 @@ def clean_data(text):
     5. **Remove phone numbers and email addresses:** Removes phone numbers and email addresses from the text.
     6. **Lemmatization:** Lemmatizes words to their base form.
     7. **Rejoining:** Joins the remaining words back into a string with spaces in between.
+    
+
 
     Args:
         text (str): The text to be cleaned.
@@ -129,18 +127,6 @@ def clean_data(text):
     return cleaned_text
 
 
-# Define a function to get the vector representation of a document using Word2Vec
-def vectorize_text(doc, w2v_model):
-
-    # Remove out-of-vocabulary words and get Word2Vec vectors for the words in the document
-    words = [word for word in doc.split() if word in w2v_model]
-    if not words:
-        # If none of the words are in the Word2Vec model, return zeros
-        return np.zeros(300)
-
-    # Return the mean of Word2Vec vectors for words in the document
-    return np.mean(w2v_model[words], axis=0)
-
 
 def extract_clean_pdf(pdf_data):
 
@@ -155,18 +141,18 @@ def extract_clean_pdf(pdf_data):
     return clean_data(text)
 
 
-def cosine_similarity(vec1, vec2):
-    """
-    Calculate the cosine similarity between two vectors.
+# Define a function to get the vector representation of a document using Word2Vec
+def vectorize_text(doc, embedding_model):
 
-    Args:
-        vec1 (np.array): First vector.
-        vec2 (np.array): Second vector.
+    # Remove out-of-vocabulary words and get Word2Vec vectors for the words in the document
+    words = [word for word in doc.split() if word in embedding_model]
+    if not words:
+        # If none of the words are in the Word2Vec model, return zeros
+        return np.zeros(300)
 
-    Returns:
-        float: The cosine similarity between the two vectors.
-    """
-    return 1 - cosine(vec1, vec2)
+    # Return the mean of Word2Vec vectors for words in the document
+    return np.mean(embedding_model[words], axis=0)
+
 
 
 def download_questions(questions_text):
@@ -203,6 +189,7 @@ if 'clean_text_resume' not in st.session_state:
 
 
 def resume_radar_page():
+    llm, embedding_model = load_models()
     col1, col2 = st.columns(spec=(2, 1.3), gap="large")
     uploaded_file = None
     with col1:
@@ -225,6 +212,7 @@ def resume_radar_page():
         if uploaded_file is not None:
             pdf_data = uploaded_file.read()
             b64_pdf = base64.b64encode(pdf_data).decode("utf-8")
+            st.write("")
             pdf_display = f'<embed src="data:application/pdf;base64,{b64_pdf}" width="690" height="740" type="application/pdf">'
             st.markdown(pdf_display, unsafe_allow_html=True)
 
@@ -235,35 +223,33 @@ def resume_radar_page():
                         st.error("Please provide the job description first.")
                 else:
                     with col1:
-                        w2v_model = load_w2v()
                         clean_text_resume = extract_clean_pdf(pdf_data)
                         clean_text_jd = clean_data(job_description)
+
+                        # Generate embeddings for resume and job description
+                        resume_vector = vectorize_text(clean_text_resume, embedding_model)
+                        jd_vector = vectorize_text(clean_text_jd, embedding_model)
+                        similarity_score = np.round(1 - cosine(resume_vector, jd_vector),2)
                     
+                        st.write(
+                            "<p style='font-size: 22px;text-align: center;background-color:#C3E8FF;'>Your resume and job description have <strong>"
+                            + str(similarity_score * 100)
+                            + "% similarity</strong></p>",
+                            unsafe_allow_html=True,
+                        )
+                        # Save clean_text_resume in session state
+                        st.session_state.clean_text_resume = clean_text_resume
 
-                        resume_vector = vectorize_text(clean_text_resume, w2v_model)
-                        jd_vector = vectorize_text(clean_text_jd, w2v_model)
-                        st.write(resume_vector)
-                        st.write(jd_vector)
-                        # similarity_score = np.round(
-                        #     cosine_similarity(resume_vector, jd_vector), 2
-                        # )
-                        # st.write(
-                        #     "<p style='font-size: 22px;text-align: center;background-color:#C3E8FF;'>Your resume and job description have <strong>"
-                        #     + str(similarity_score * 100)
-                        #     + "% similarity</strong></p>",
-                        #     unsafe_allow_html=True,
-                        # )
-                        # # Save clean_text_resume in session state
-                        # st.session_state.clean_text_resume = clean_text_resume
-
-    # concent_button = st.button("Generate tailored Interview questions as per your resume", use_container_width=True)
-    # if concent_button:
-    #     if st.session_state.clean_text_resume:
-    #         questions = get_questions(st.session_state.clean_text_resume)
-    #         download_questions(questions)
-    #         st.write("***")
-    #     else:
-    #         st.error("Please analyze your resume first.")
+    concent_button = st.button("Generate tailored Interview questions as per your resume", use_container_width=True)
+    if concent_button:
+        if st.session_state.clean_text_resume:
+            questions = get_questions(st.session_state.clean_text_resume,llm)
+            download_questions(questions)
+            st.write("***")
+        else:
+            st.error("Please analyze your resume first.")
 
 
 resume_radar_page()
+
+
