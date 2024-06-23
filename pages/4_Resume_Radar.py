@@ -4,6 +4,7 @@ from io import BytesIO
 from PyPDF2 import PdfReader
 from nltk.stem import WordNetLemmatizer
 import io
+import os
 import string
 import nltk
 import time
@@ -18,7 +19,10 @@ import matplotlib.pyplot as plt
 from langchain.schema.output_parser import StrOutputParser
 from langchain.prompts import PromptTemplate
 from langchain_google_genai import ChatGoogleGenerativeAI
-
+from langchain_community.llms import Ollama
+from langchain_community.embeddings import OllamaEmbeddings
+from dotenv import load_dotenv
+load_dotenv()
 
 st.markdown(
     """
@@ -46,9 +50,10 @@ stop_words = set(nltk.corpus.stopwords.words("english"))
 @st.cache_resource
 def load_model():
     llm = ChatGoogleGenerativeAI(
-        model="gemini-pro", google_api_key="AIzaSyBKhTXbpfX9fBBGW6gEDKn5dc_ez-s7hWw"
+        model="gemini-pro", google_api_key=os.getenv("GEMINI_API_KEY")
     )
-    return llm
+    embedding_model = OllamaEmbeddings(model="jina/jina-embeddings-v2-base-de")
+    return llm, embedding_model
 
 
 def get_questions(text):
@@ -233,29 +238,32 @@ def resume_radar_page():
                         w2v_model = load_w2v()
                         clean_text_resume = extract_clean_pdf(pdf_data)
                         clean_text_jd = clean_data(job_description)
+                    
 
                         resume_vector = vectorize_text(clean_text_resume, w2v_model)
                         jd_vector = vectorize_text(clean_text_jd, w2v_model)
-                        similarity_score = np.round(
-                            cosine_similarity(resume_vector, jd_vector), 2
-                        )
-                        st.write(
-                            "<p style='font-size: 22px;text-align: center;background-color:#C3E8FF;'>Your resume and job description have <strong>"
-                            + str(similarity_score * 100)
-                            + "% similarity</strong></p>",
-                            unsafe_allow_html=True,
-                        )
-                        # Save clean_text_resume in session state
-                        st.session_state.clean_text_resume = clean_text_resume
+                        st.write(resume_vector)
+                        st.write(jd_vector)
+                        # similarity_score = np.round(
+                        #     cosine_similarity(resume_vector, jd_vector), 2
+                        # )
+                        # st.write(
+                        #     "<p style='font-size: 22px;text-align: center;background-color:#C3E8FF;'>Your resume and job description have <strong>"
+                        #     + str(similarity_score * 100)
+                        #     + "% similarity</strong></p>",
+                        #     unsafe_allow_html=True,
+                        # )
+                        # # Save clean_text_resume in session state
+                        # st.session_state.clean_text_resume = clean_text_resume
 
-    concent_button = st.button("Generate tailored Interview questions as per your resume", use_container_width=True)
-    if concent_button:
-        if st.session_state.clean_text_resume:
-            questions = get_questions(st.session_state.clean_text_resume)
-            download_questions(questions)
-            st.write("***")
-        else:
-            st.error("Please analyze your resume first.")
+    # concent_button = st.button("Generate tailored Interview questions as per your resume", use_container_width=True)
+    # if concent_button:
+    #     if st.session_state.clean_text_resume:
+    #         questions = get_questions(st.session_state.clean_text_resume)
+    #         download_questions(questions)
+    #         st.write("***")
+    #     else:
+    #         st.error("Please analyze your resume first.")
 
 
 resume_radar_page()
