@@ -8,7 +8,7 @@ st.markdown(
     """
         <style>
                .block-container {
-                    padding-top: 0.0rem;
+                    padding-top: 0.2rem;
                     padding-bottom: 0rem;
                     # padding-left: 2rem;
                     # padding-right:2rem;
@@ -128,21 +128,19 @@ def chunk_creation(article, max_chunk=512):
 
 def text_summarization_page():
     st.markdown(
-        "<h1 style='text-align: center; font-size: 50px;'>Condense and Conquer</h1>",
+        "<h1 style='text-align: center; font-size: 50px;'>Condense and Conquer📌</h1>",
         unsafe_allow_html=True,
     )
 
-    Analytics_intro = "<p style='font-size: 22px; text-align: center;'>This module was developed to address situations where, during our placement preparations or general inquiries, we need information on a specific topic. Instead of reviewing extensive content, users can simply provide the link to a website containing the relevant blog post. Our module will then automatically scrape the content and generate a summary for you. </p>"
+    Analytics_intro = "<p style='font-size: 22px; text-align: center;'>This module is designed to streamline information retrieval during placement preparations or general inquiries by providing concise summaries of specific topics. Users can provide the URL of a website containing the relevant blog post, and the module will automatically scrape the content and generate a summary. This eliminates the need to review extensive content, saving time and effort. However, please note that content behind paywalls cannot be processed due to access restrictions. In such cases, users may need to provide an alternative source or a different post. </p>"
     st.markdown(Analytics_intro, unsafe_allow_html=True)
+    summarizer = summarizing_pipeline()
     st.markdown("***")
 
     summary = ""
     original_text = ""
     col1, col2 = st.columns([2, 1], gap="large")
     with col1:
-        guideline_text = "<p style='font-size: 20px; text-align: left;'>To provide a concise summary of a blog post, simply copy and paste its URL below. However, please note that we are unable to process content behind paywalls due to access restrictions. In such cases, an alternative source or a different post may be necessary.</p>"
-        st.markdown(guideline_text, unsafe_allow_html=True)
-
         url = st.text_input("Enter the blog post URL")
         bool_summarized_content = False
         summarize_col, registered_col = st.columns(2, gap="large")
@@ -155,8 +153,6 @@ def text_summarization_page():
                     ARTICLE = extract_process(url)
                     original_text = ARTICLE
                     CHUNKS = chunk_creation(ARTICLE)
-
-                    summarizer = summarizing_pipeline()
                     results = summarizer(
                         CHUNKS, max_length=150, min_length=50, do_sample=False
                     )
