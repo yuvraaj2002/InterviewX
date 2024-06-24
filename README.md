@@ -5,8 +5,8 @@
 Welcome to InterviewX, your all-in-one solution for interview success! Utilizing cutting-edge AI, InterviewX offers modules to enhance your preparation at every stage. Easily differentiate between genuine and fraudulent job postings with our scam detection feature. Craft a standout resume with Resume Content Matching and Top 5 Questions, which analyzes your resume and reveals expected interview questions based on your qualifications. Project confidence with Real-Time Posture Analysis, refining your body language instantly. Save time with Text Summarization, providing concise insights from lengthy materials. And make a memorable entrance with Ice Breaker, gaining fascinating insights about your interviewer and an engaging statement for rapport-building success. Ace your next interview with confidence, powered by InterviewX.
 
 <!-- PROJECT LOGO -->
-![image](https://github.com/yuvraaj2002/InterviewX/assets/123289647/1a2dd0db-9f54-4023-a284-80441c1f45f2)
-LIVE PROJECT LINK ➡️ https://greenguardai-re3tsfre3ufpu9sk96bjjd.streamlit.app/
+## Project Youtube Demo Video (Click to watch)
+[![Watch the video](https://img.youtube.com/vi/LKFNk6_kUGc/maxresdefault.jpg)](https://youtu.be/LKFNk6_kUGc)
 
 <!-- TABLE OF CONTENTS -->
 <details>
