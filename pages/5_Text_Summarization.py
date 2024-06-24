@@ -23,7 +23,12 @@ st.markdown(
 def summarizing_pipeline():
 
     # Instantiating the summarization pipeline using t5-base model
-    summarizer = pipeline("summarization")
+    summarizer = pipeline(
+        "summarization",
+        model="t5-base",
+        tokenizer="t5-base",
+        framework="pt",
+    )
     return summarizer
 
 
