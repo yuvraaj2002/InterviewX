@@ -3,17 +3,10 @@ import numpy as np
 import pandas as pd
 import plotly.express as px
 import xgboost as xgb
-import tensorflow as tf
 import pickle
 import joblib
-import re
-import string
-import nltk
-from nltk.tokenize import word_tokenize
 import os
-from dotenv import load_dotenv
 
-load_dotenv()
 
 st.markdown(
     """
@@ -41,11 +34,6 @@ def load_model_gbc():
     return classifier
 
 
-
-@st.cache_resource
-def load_model_blstm():
-    blstm_model = tf.keras.models.load_model("artifacts/model.keras")
-    return blstm_model
 
 
 @st.cache_resource
@@ -103,62 +91,6 @@ def create_non_text_features(
     df = pd.DataFrame(data)
     return df
 
-
-# Remove stop words
-def remove_stopwords(token):
-    return tf.math.logical_not(tf.reduce_any(tf.math.equal(stop_words, token)))
-
-
-def process_text(input_data):
-    """
-    Output: Cleaned text tensor
-
-    Description: This function will take a single raw text as input, remove all stopwords and punctuation, then lowercase the words to eliminate any ambiguity.
-    Ultimately clean text will be returned as a tensor.
-    """
-
-    # Lowercase the input data
-    lowercase = tf.strings.lower(input_data)
-
-    # Remove punctuation
-    no_punctuation = tf.strings.regex_replace(
-        lowercase, "[%s]" % re.escape(string.punctuation), ""
-    )
-
-    # Tokenizing the words in the strings
-    tokens = tf.strings.split(no_punctuation)
-    filtered_tokens = tf.map_fn(remove_stopwords, tokens, fn_output_signature=tf.bool)
-
-    # Filter tokens based on the boolean mask
-    filtered_tokens = tf.boolean_mask(tokens, filtered_tokens)
-
-    processed_text = tf.strings.reduce_join(filtered_tokens, separator=" ", axis=-1)
-    return processed_text
-
-
-def process_predict_text_feature(text):
-    """
-    This function takes a question as input and returns the predicted category.
-    """
-
-    # Creating tensor from the string
-    Input_text = tf.constant(text)
-
-    # Cleaning the text
-    Input_text = process_text(Input_text)
-
-    # Fixing the input dimension
-    Input_text = tf.expand_dims(Input_text, axis=0)
-
-    # Getting predictions from the model
-    blstm_model = load_model_blstm()
-    predictions = blstm_model.predict(Input_text)
-
-    # Extracting the predicted class index (as a scalar)
-    predicted_class_index = np.argmax(predictions, axis=1)[0]  # Access the first element
-
-    # Mapping the index to the corresponding label
-    # return class_labels[predicted_class_index]
 
 
 def process_predict_non_text_feature(df):
