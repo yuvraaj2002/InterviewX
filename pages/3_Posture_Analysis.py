@@ -75,7 +75,7 @@ def process_video(
         min_detection_confidence=0.8, min_tracking_confidence=0.8
     ) as pose:
         frame_count = 0
-        skip_count = 2  # Number of frames to skip between processing
+        skip_count = 5  # Number of frames to skip between processing
 
         # Create a placeholder for the image
         image_placeholder = st.empty()
@@ -109,10 +109,10 @@ def process_video(
                         results.pose_landmarks,
                         mp_pose.POSE_CONNECTIONS,
                         mp_drawing.DrawingSpec(
-                            color=(245, 117, 66), thickness=2, circle_radius=2
+                            color=(245, 117, 66), thickness=4, circle_radius=3
                         ),
                         mp_drawing.DrawingSpec(
-                            color=(245, 66, 230), thickness=2, circle_radius=2
+                            color=(245, 66, 230), thickness=4, circle_radius=3
                         ),
                     )
                     # Retrieve left and right shoulder coordinates
@@ -154,7 +154,7 @@ def process_video(
 
 def posture_analysis_page():
     st.markdown(
-        "<h1 style='text-align: left; font-size: 58px;'>Posture analysis🕵️</h1>",
+        "<h1 style='text-align: left; font-size: 52px;'>Posture analysis🕵️</h1>",
         unsafe_allow_html=True,
     )
     st.markdown(
@@ -189,18 +189,19 @@ def posture_analysis_page():
                     temp_file_path = temp_file.name
 
                 with input_col:
-
-                    angles_shoulders, angles_lse, angles_rse, angles_lew, angles_rew = (
-                        process_video(
-                            temp_file_path,
-                            angles_shoulders,
-                            angles_lse,
-                            angles_rse,
-                            angles_lew,
-                            angles_rew,
+                    with st.spinner("Processing video 🔎"):
+                        angles_shoulders, angles_lse, angles_rse, angles_lew, angles_rew = (
+                            process_video(
+                                temp_file_path,
+                                angles_shoulders,
+                                angles_lse,
+                                angles_rse,
+                                angles_lew,
+                                angles_rew,
+                            )
                         )
-                    )
                     video_processed = True
+                    st.success("Video processed successfully 👏")
 
                 # Remove the temporary file after processing if temp_file_path is defined
                 if temp_file_path:
@@ -231,7 +232,7 @@ def posture_analysis_page():
             for name, avg_angle, col in zip(
                 avg_angles.keys(), avg_angles.values(), row
             ):
-                tile = col.container(height=120)  # Adjust the height as needed
+                tile = col.container(height=123)  # Adjust the height as needed
                 tile.markdown(
                     f"<p style='text-align: left; font-size: 18px; '>Average {name}: <b>{avg_angle:.2f}</b></p>",
                     unsafe_allow_html=True,
@@ -239,33 +240,42 @@ def posture_analysis_page():
                 index += 1
 
             feedback_dict = {
-                'Shoulder alignment': '',
-                'Hand gestures': '',
-                'Left Shoulder-Elbow': '',
-                'Right Shoulder-Elbow': ''
+                "Shoulder alignment": "",
+                "Hand gestures": "",
+                "Left Shoulder-Elbow": "",
+                "Right Shoulder-Elbow": "",
             }
 
-            if avg_angles['Shoulders angle'] > 0 and avg_angles['Shoulders angle'] < 15:
-                feedback_dict['Shoulder alignment'] = '✅'
+            if avg_angles["Shoulders angle"] > 0 and avg_angles["Shoulders angle"] < 15:
+                feedback_dict["Shoulder alignment"] = "✅"
             else:
-                feedback_dict['Shoulder alignment'] = '❌'
+                feedback_dict["Shoulder alignment"] = "❌"
 
-            if avg_angles['Left elbow-wrist angle'] != 0 and avg_angles['Right elbow-wrist angle'] != 0:
-                feedback_dict['Hand gestures'] = '✅'
+            if (
+                avg_angles["Left elbow-wrist angle"] != 0
+                and avg_angles["Right elbow-wrist angle"] != 0
+            ):
+                feedback_dict["Hand gestures"] = "✅"
             else:
-                feedback_dict['Hand gestures'] = '❌'
+                feedback_dict["Hand gestures"] = "❌"
 
-            if avg_angles['Left shoulder-elbow angle'] > 0 and avg_angles['Left shoulder-elbow angle'] < 20:
-                feedback_dict['Left Shoulder-Elbow'] = '✅'
+            if (
+                avg_angles["Left shoulder-elbow angle"] > 0
+                and avg_angles["Left shoulder-elbow angle"] < 20
+            ):
+                feedback_dict["Left Shoulder-Elbow"] = "✅"
             else:
-                feedback_dict['Left Shoulder-Elbow'] = '❌'
+                feedback_dict["Left Shoulder-Elbow"] = "❌"
 
-            if avg_angles['Right shoulder-elbow angle'] > 0 and avg_angles['Right shoulder-elbow angle'] < 20:
-                feedback_dict['Right Shoulder-Elbow'] = '✅'
+            if (
+                avg_angles["Right shoulder-elbow angle"] > 0
+                and avg_angles["Right shoulder-elbow angle"] < 20
+            ):
+                feedback_dict["Right Shoulder-Elbow"] = "✅"
             else:
-                feedback_dict['Right Shoulder-Elbow'] = '❌'
+                feedback_dict["Right Shoulder-Elbow"] = "❌"
 
-            feedback_df = pd.DataFrame(feedback_dict, index=['Feedback'])
+            feedback_df = pd.DataFrame(feedback_dict, index=["Feedback"])
             st.dataframe(feedback_df)
 
 
