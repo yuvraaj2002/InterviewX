@@ -169,114 +169,115 @@ def posture_analysis_page():
     angles_rew = []
     angles_lew = []
 
-    input_col, configuration_col = st.columns(spec=(2, 1.9), gap="large")
-    with input_col:
-        pass
+    with st.container(border=True):
+        input_col, configuration_col = st.columns(spec=(1.9, 1.9), gap="large")
+        with input_col:
+            pass
 
-    temp_file_path = None  # Initialize temp_file_path outside the if block
+        temp_file_path = None  # Initialize temp_file_path outside the if block
 
-    with configuration_col:
-        video = st.file_uploader("Upload the video")
-        analyze_video = st.button("Analyze", use_container_width=True)
-        video_processed = False
-        if video is not None:
-            if analyze_video:
-                video_bytes = video.read()
+        with configuration_col:
+            video = st.file_uploader("Upload the video")
+            analyze_video = st.button("Analyze", use_container_width=True)
+            video_processed = False
+            if video is not None:
+                if analyze_video:
+                    video_bytes = video.read()
 
-                # Save uploaded video to a temporary file
-                with tempfile.NamedTemporaryFile(delete=False) as temp_file:
-                    temp_file.write(video_bytes)
-                    temp_file_path = temp_file.name
+                    # Save uploaded video to a temporary file
+                    with tempfile.NamedTemporaryFile(delete=False) as temp_file:
+                        temp_file.write(video_bytes)
+                        temp_file_path = temp_file.name
 
-                with input_col:
-                    with st.spinner("Processing video 🔎"):
-                        angles_shoulders, angles_lse, angles_rse, angles_lew, angles_rew = (
-                            process_video(
-                                temp_file_path,
-                                angles_shoulders,
-                                angles_lse,
-                                angles_rse,
-                                angles_lew,
-                                angles_rew,
+                    with input_col:
+                        with st.spinner("Processing video 🔎"):
+                            angles_shoulders, angles_lse, angles_rse, angles_lew, angles_rew = (
+                                process_video(
+                                    temp_file_path,
+                                    angles_shoulders,
+                                    angles_lse,
+                                    angles_rse,
+                                    angles_lew,
+                                    angles_rew,
+                                )
                             )
-                        )
-                    video_processed = True
-                    st.success("Video processed successfully 👏")
+                        video_processed = True
+                        st.success("Video processed successfully 👏")
 
-                # Remove the temporary file after processing if temp_file_path is defined
-                if temp_file_path:
-                    os.unlink(temp_file_path)
-        else:
-            st.error("Upload the video and then press analyze button❗")
-
-        # Convert lists to NumPy arrays
-        if video_processed:
-            angles_shoulders_array = np.array(angles_shoulders)
-            angles_lse_array = np.array(angles_lse)
-            angles_rse_array = np.array(angles_rse)
-            angles_lew_array = np.array(angles_lew)
-            angles_rew_array = np.array(angles_rew)
-
-            # Calculate the mean of each array
-            avg_angles = {
-                "Shoulders angle": angles_shoulders_array.mean(),
-                "Left shoulder-elbow angle": angles_lse_array.mean(),
-                "Right shoulder-elbow angle": angles_rse_array.mean(),
-                "Left elbow-wrist angle": angles_lew_array.mean(),
-                "Right elbow-wrist angle": angles_rew_array.mean(),
-            }
-
-            st.write("***")
-            row = st.columns(5)
-            index = 0
-            for name, avg_angle, col in zip(
-                avg_angles.keys(), avg_angles.values(), row
-            ):
-                tile = col.container(height=123)  # Adjust the height as needed
-                tile.markdown(
-                    f"<p style='text-align: left; font-size: 18px; '>Average {name}: <b>{avg_angle:.2f}</b></p>",
-                    unsafe_allow_html=True,
-                )
-                index += 1
-
-            feedback_dict = {
-                "Shoulder alignment": "",
-                "Hand gestures": "",
-                "Left Shoulder-Elbow": "",
-                "Right Shoulder-Elbow": "",
-            }
-
-            if avg_angles["Shoulders angle"] > 0 and avg_angles["Shoulders angle"] < 15:
-                feedback_dict["Shoulder alignment"] = "✅"
+                    # Remove the temporary file after processing if temp_file_path is defined
+                    if temp_file_path:
+                        os.unlink(temp_file_path)
             else:
-                feedback_dict["Shoulder alignment"] = "❌"
+                st.error("Upload the video and then press analyze button❗")
 
-            if (
-                avg_angles["Left elbow-wrist angle"] != 0
-                and avg_angles["Right elbow-wrist angle"] != 0
-            ):
-                feedback_dict["Hand gestures"] = "✅"
-            else:
-                feedback_dict["Hand gestures"] = "❌"
+            # Convert lists to NumPy arrays
+            if video_processed:
+                angles_shoulders_array = np.array(angles_shoulders)
+                angles_lse_array = np.array(angles_lse)
+                angles_rse_array = np.array(angles_rse)
+                angles_lew_array = np.array(angles_lew)
+                angles_rew_array = np.array(angles_rew)
 
-            if (
-                avg_angles["Left shoulder-elbow angle"] > 0
-                and avg_angles["Left shoulder-elbow angle"] < 20
-            ):
-                feedback_dict["Left Shoulder-Elbow"] = "✅"
-            else:
-                feedback_dict["Left Shoulder-Elbow"] = "❌"
+                # Calculate the mean of each array
+                avg_angles = {
+                    "Shoulders angle": angles_shoulders_array.mean(),
+                    "Left shoulder-elbow angle": angles_lse_array.mean(),
+                    "Right shoulder-elbow angle": angles_rse_array.mean(),
+                    "Left elbow-wrist angle": angles_lew_array.mean(),
+                    "Right elbow-wrist angle": angles_rew_array.mean(),
+                }
 
-            if (
-                avg_angles["Right shoulder-elbow angle"] > 0
-                and avg_angles["Right shoulder-elbow angle"] < 20
-            ):
-                feedback_dict["Right Shoulder-Elbow"] = "✅"
-            else:
-                feedback_dict["Right Shoulder-Elbow"] = "❌"
+                st.write("***")
+                row = st.columns(5)
+                index = 0
+                for name, avg_angle, col in zip(
+                    avg_angles.keys(), avg_angles.values(), row
+                ):
+                    tile = col.container(height=124)  # Adjust the height as needed
+                    tile.markdown(
+                        f"<p style='text-align: left; font-size: 18px; '>Average {name}: <b>{avg_angle:.2f}</b></p>",
+                        unsafe_allow_html=True,
+                    )
+                    index += 1
 
-            feedback_df = pd.DataFrame(feedback_dict, index=["Feedback"])
-            st.dataframe(feedback_df)
+                feedback_dict = {
+                    "Shoulder alignment": "",
+                    "Hand gestures": "",
+                    "Left Shoulder-Elbow": "",
+                    "Right Shoulder-Elbow": "",
+                }
+
+                if avg_angles["Shoulders angle"] > 0 and avg_angles["Shoulders angle"] < 16:
+                    feedback_dict["Shoulder alignment"] = "✅"
+                else:
+                    feedback_dict["Shoulder alignment"] = "❌"
+
+                if (
+                    avg_angles["Left elbow-wrist angle"] != 0
+                    and avg_angles["Right elbow-wrist angle"] != 0
+                ):
+                    feedback_dict["Hand gestures"] = "✅"
+                else:
+                    feedback_dict["Hand gestures"] = "❌"
+
+                if (
+                    avg_angles["Left shoulder-elbow angle"] > 0
+                    and avg_angles["Left shoulder-elbow angle"] < 20
+                ):
+                    feedback_dict["Left Shoulder-Elbow"] = "✅"
+                else:
+                    feedback_dict["Left Shoulder-Elbow"] = "❌"
+
+                if (
+                    avg_angles["Right shoulder-elbow angle"] > 0
+                    and avg_angles["Right shoulder-elbow angle"] < 20
+                ):
+                    feedback_dict["Right Shoulder-Elbow"] = "✅"
+                else:
+                    feedback_dict["Right Shoulder-Elbow"] = "❌"
+
+                feedback_df = pd.DataFrame(feedback_dict, index=["Feedback"])
+                st.dataframe(feedback_df)
 
 
 posture_analysis_page()
