@@ -1,0 +1,7 @@
+1. Describe the key challenges you faced while developing the personal document identification mask algorithm at Samsung Research and Development, and how you overcame them.
+2. Explain how you implemented YOLO v8 within the Indian road traffic management system at Wictronix, and what improvements it brought.
+3. Discuss your role in developing personalized home recommendations and financial insights at Findhome.ai, and highlight the specific AI algorithms and tools you utilized.
+4. Describe the real-time emotion detection and personalized communication feedback features you implemented in your AI interview prep app, and how they enhance the user experience.
+5. Explain the research methodology you employed to analyze the impact and performance of various activation functions in classification problems, and discuss the key findings.
+6. Describe the natural language processing techniques and datasets you leveraged to develop the advanced fake news classifier using the T5 model.
+7. Share your experience as a Microsoft Learn Student Ambassador and discuss the contributions you made to the community.

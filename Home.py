@@ -33,7 +33,7 @@ st.markdown(
 
 # Main page function
 def main_page():
-    Overview_col, Img_col = st.columns(spec=(1.2, 1), gap="large")
+    Overview_col, Img_col = st.columns(spec=(1.3, 1), gap="large")
 
     with Overview_col:
         # Content for main page
@@ -41,7 +41,6 @@ def main_page():
             "<h1 style='text-align: left; font-size: 85px; '>InterviewX</h1>",
             unsafe_allow_html=True,
         )
-        st.write("")
         st.markdown(
             "<p style='font-size: 22px; text-align: left;'>Are you ready to ace your next interview with confidence? Welcome to InterviewX, your ultimate companion on the journey to interview success. Harnessing the power of cutting-edge AI technology, InterviewX offers a comprehensive suite of modules designed to empower individuals at every stage of their interview preparation.</p>",
             unsafe_allow_html=True,

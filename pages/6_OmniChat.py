@@ -166,7 +166,7 @@ def chat_with_utube():
     col1, col2 = st.columns(spec=(2.5,1), gap="large")
     with col1:
         st.markdown(
-            "<h1 style='text-align: left; font-size: 48px;'>OmniChat: Ask Your Data</h1>",
+            "<h1 style='text-align: left; font-size: 48px;'>Chat With Docs</h1>",
             unsafe_allow_html=True,
         )
         st.markdown(

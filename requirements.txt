@@ -22,5 +22,9 @@ langchain-experimental==0.0.53
 langchain-google-genai==0.0.9
 python-dotenv==1.0.1
 wordcloud==1.9.2
+whisper
+pytube
+pydub
+langchain-pinecone
 
 -e .
