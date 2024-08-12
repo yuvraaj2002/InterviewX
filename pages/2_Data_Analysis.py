@@ -84,7 +84,7 @@ def univariate_analysis(df):
             unsafe_allow_html=True,
         )
         with st.expander(label = "What is the overall dimensionality of the dataset ?"):
-            st.write(df.shape,"Which means there are around 17k rows and 10 features")
+            st.write("There are around 17k rows and 10 features")
         with st.expander(label = "What's the count of categorical/numerical features in our data ?"):
             st.write("All the 8 features are categorical in nature, but out of all 3 features are ordinal features,1 is nominal feature and remaining 4 are simple binary categorical features")
 
