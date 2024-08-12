@@ -5,22 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="dea36ed9-e3de-4743-98f7-7812d414caf2" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.name" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.name" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/AI_Tutor.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/AI_Tutor.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Dataset/Fake_job_Non_Text.csv" beforeDir="false" afterPath="$PROJECT_DIR$/Dataset/Fake_job_Non_Text.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Dataset/Job_features_NText_.csv" beforeDir="false" afterPath="$PROJECT_DIR$/Dataset/Job_features_NText_.csv" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Home.py" beforeDir="false" afterPath="$PROJECT_DIR$/Home.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Notebook/Fake_Job_Posting.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/Notebook/Fake_Job_Posting.ipynb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Notebook/Job_Posting_Texts.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/Notebook/Job_Posting_Texts.ipynb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Notebook/que-classification-training.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/Notebook/que-classification-training.ipynb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/artifacts/Tanish_Resume.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/artifacts/Yuvraj_21BCS6343.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/output/processed_video.mp4" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/pages/6_OmniChat.py" beforeDir="false" afterPath="$PROJECT_DIR$/pages/6_OmniChat.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Chains.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/Chains.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Scrapte_linkedin_data.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/Scrapte_linkedin_data.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pages/2_Data_Analysis.py" beforeDir="false" afterPath="$PROJECT_DIR$/pages/2_Data_Analysis.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -51,15 +38,15 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "master",
-    "last_opened_file_path": "D:/Projects/InterviewX/pages/1_Spot_the_scam.py",
-    "settings.editor.selected.configurable": "preferences.editor"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;last_opened_file_path&quot;: &quot;D:/Projects/InterviewX/pages/1_Spot_the_scam.py&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.editor&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
       <recent name="D:\Projects\InterviewX" />
@@ -156,7 +143,7 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-python-sdk-d68999036c7f-d3b881c8e49f-com.jetbrains.pycharm.community.sharedIndexes.bundled-PC-233.14475.56" />
+        <option value="bundled-python-sdk-eebebe6c2be4-d3b881c8e49f-com.jetbrains.pycharm.community.sharedIndexes.bundled-PC-233.15325.20" />
       </set>
     </attachedChunks>
   </component>

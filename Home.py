@@ -54,7 +54,7 @@ def main_page():
                 <li><p style='font-size: 22px; text-align: left;'><strong>Resume Content Matching and Top 5 Questions:</strong> Craft the perfect resume! InterviewX analyzes your resume and matches it with job descriptions, revealing the top five expected questions based on your qualifications.</p></li>
                 <li><p style='font-size: 22px; text-align: left;'><strong>Real-Time Posture Analysis:</strong> Project confidence flawlessly! InterviewX's posture analysis gives instant feedback to refine your body language for a professional impression during interviews.</p></li>
                 <li><p style='font-size: 22px; text-align: left;'><strong>Text Summarization:</strong> Stay informed, save time! InterviewX summarizes lengthy materials quickly and efficiently. Just input the blog post link for concise insights.</p></li>
-                <li><p style='font-size: 22px; text-align: left;'><strong>Ice Breaker:</strong> Make a memorable entrance! InterviewX provides fascinating insights into your interviewer. Simply give their name, and get two interesting facts and an engaging ice breaker statement, setting the stage for rapport-building success.</p></li>
+                <li><p style='font-size: 22px; text-align: left;'><strong>OmniChat:</strong> Effortlessly enhance your media experience! Upload a YouTube URL or PDF, and our AI will create searchable transcripts and text extractions. Access detailed insights instantly with our advanced AI technology.</p></li>
             </ul>
         </div>
         """,
