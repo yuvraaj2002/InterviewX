@@ -184,7 +184,7 @@ def text_summarization_page():
 
         st.link_button(
             "Original Blog Post (Anti Scaraping disabled)",
-            "https://www.codecontent.net/post/introduction-to-llama",
+            "https://ai.meta.com/blog/large-language-model-llama-meta-ai/",
             use_container_width=True,
         )
 
