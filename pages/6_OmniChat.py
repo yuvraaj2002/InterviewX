@@ -4,9 +4,7 @@ import io
 import base64
 import time
 import re
-import whisper
-from pytube import YouTube
-from pydub import AudioSegment
+from youtube_transcript_api import YouTubeTranscriptApi
 from PyPDF2 import PdfReader
 
 from langchain_community.llms import Ollama
@@ -53,31 +51,9 @@ def load_models():
 
     embedding_model = OllamaEmbeddings(model="jina/jina-embeddings-v2-base-de")
     llm = ChatGoogleGenerativeAI(model="gemini-pro", google_api_key=os.environ['GEMINI_API_KEY'])
-    whisper_model = whisper.load_model("base")
-    return whisper_model,llm,embedding_model
+    return llm,embedding_model
 
 
-
-# Function to transcribe audio using OpenAI's Whisper model
-def transcribe_audio(whisper_model, file_path: str) -> str:
-    result = whisper_model.transcribe(file_path)
-    return result["text"]
-
-
-# Function to download and convert YouTube audio to a temporary file for transcription
-def download_and_convert_audio(video_url: str, output_path: str) -> str:
-    yt = YouTube(video_url)
-    audio_stream = yt.streams.filter(only_audio=True).first()
-    audio_file = audio_stream.download(output_path=output_path)
-    audio_wav = os.path.splitext(audio_file)[0] + '.wav'
-    
-    # Convert the downloaded audio file to WAV format using pydub
-    audio = AudioSegment.from_file(audio_file)
-    audio.export(audio_wav, format="wav")
-    
-    # Remove the original audio file
-    os.remove(audio_file)
-    return audio_wav
 
 
 
@@ -130,14 +106,13 @@ def get_answer(vdb_contxt_text, query_text, llm):
     return response
 
 
-def process_load(pdf_data,video_id,whisper,llm,embedding_model):
-    
-    output_path = "../download_video"  
-    video_url = f"https://www.youtube.com/watch?v={video_id}"
-    audio_file = download_and_convert_audio(video_url, output_path)
+def process_load(pdf_data,youtube_id,llm,embedding_model):
 
-    # Transcribing the audio
-    transcription = transcribe_audio(whisper, audio_file)
+    result = YouTubeTranscriptApi.get_transcript(youtube_id)
+    yt_captions = ""
+    for item in iter(result):
+        yt_captions = yt_captions + item['text'] + ""
+    
 
     # Create a BytesIO object
     file_object = io.BytesIO(pdf_data)  
@@ -149,18 +124,18 @@ def process_load(pdf_data,video_id,whisper,llm,embedding_model):
         pdf_text += page.extract_text()
 
 
-    context_data = transcription + pdf_text
+    context_data = yt_captions + pdf_text
     text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=100)
     docs = [Document(page_content=x) for x in text_splitter.split_text(context_data)]
     
-    pinecone = PineconeVectorStore.from_documents(docs, embedding_model, index_name="docquest",pinecone_api_key=os.environ['PINECONE_API_KEY'])
-    return pinecone
+    # pinecone = PineconeVectorStore.from_documents(docs, embedding_model, index_name="docquest",pinecone_api_key=os.environ['PINECONE_API_KEY'])
+    return docs
 
 
 def chat_with_utube():
 
     # Calling the function to load the Whisper model, LLM and embedding model
-    whisper,llm,embedding_model = load_models()
+    llm,embedding_model = load_models()
     pinecone_obj = None
 
     col1, col2 = st.columns(spec=(2.5,1), gap="large")
@@ -199,7 +174,7 @@ def chat_with_utube():
                     st.markdown(pdf_display, unsafe_allow_html=True)
 
                     # Calling the function to process both PDF and Youtube and store them in Vector DB
-                    pinecone_obj = process_load(pdf_data,video_id,whisper,llm,embedding_model)
+                    pinecone_obj = process_load(pdf_data,video_id,llm,embedding_model)
             else:
                 st.error("Invalid YouTube URL")
         else:
@@ -211,22 +186,23 @@ def chat_with_utube():
     if pinecone_obj:
         response = None
         with col1:
-            message = st.chat_message("assistant")
-            message.write("Video is Processed Succesfully, you can start with your query")
-            query_text = st.text_input("Enter your query : ")
-            if query_text:
-                result = pinecone_obj.similarity_search(query_text)[:1]
-                vdb_context_text = result[0].page_content
+            st.write(pinecone_obj)
+            # message = st.chat_message("assistant")
+            # message.write("Video is Processed Succesfully, you can start with your query")
+            # query_text = st.text_input("Enter your query : ")
+            # if query_text:
+            #     result = pinecone_obj.similarity_search(query_text)[:1]
+            #     vdb_context_text = result[0].page_content
 
-                # Calling the function to get the answer from the LLM
-                response = get_answer(vdb_context_text,query_text,llm)
+            #     # Calling the function to get the answer from the LLM
+            #     response = get_answer(vdb_context_text,query_text,llm)
 
-            if response is not None:
-                with st.container(border=True):
-                    st.markdown(
-                            f"<p style='font-size: 20px;'>{response}</p>",
-                        unsafe_allow_html=True
-                    )
+            # if response is not None:
+            #     with st.container(border=True):
+            #         st.markdown(
+            #                 f"<p style='font-size: 20px;'>{response}</p>",
+            #             unsafe_allow_html=True
+            #         )
 
             
 
