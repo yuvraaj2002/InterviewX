@@ -154,7 +154,6 @@ def vectorize_text(doc, embedding_model):
     return np.mean(embedding_model[words], axis=0)
 
 
-
 def download_questions(questions_text):
     """
     Creates a text file with the given summary text and offers download.
