@@ -209,8 +209,8 @@ def posture_analysis_page():
                         st.success("Video processed successfully 👏")
 
                     # Remove the temporary file after processing if temp_file_path is defined
-                    # if temp_file_path:
-                    #     os.unlink(temp_file_path)
+                    if temp_file_path:
+                        os.unlink(temp_file_path)
             else:
                 st.error("Upload the video and then press analyze button❗")
 
