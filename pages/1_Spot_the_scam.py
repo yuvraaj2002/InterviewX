@@ -24,8 +24,6 @@ st.markdown(
 
 with open("artifacts/industry_types.pkl", "rb") as f:
     industry_types = pickle.load(f)
-with open("artifacts/stop_words.pkl", "rb") as f:
-    stop_words = pickle.load(f)
 
 
 @st.cache_resource
@@ -149,7 +147,7 @@ def spot_scam_page():
             max_value=100,
             value=30,
             step=1,
-            key="facilities_recommendation_wt",
+            key="Model_wt",
             label_visibility="collapsed",
         )
         pie_data = {
@@ -277,13 +275,6 @@ def spot_scam_page():
                         st.error("The job listing is likely fake. Please proceed with caution.")
                     else:
                         st.success("The job listing appears to be genuine.")
-                    #st.write("Non text feature", model1_output)
-
-                    # raw_text = description + " " + requirements + " " + benefits
-                    # model2_output = process_predict_text_feature(raw_text)
-                    # st.write("Model 2 output", model2_output)
-                    # st.write(model2_output)
-                    # model2_input_df = create_text_feature(description,requirements,benefits)
-
+                  
 
 spot_scam_page()
