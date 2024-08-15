@@ -7,7 +7,7 @@ import re
 from youtube_transcript_api import YouTubeTranscriptApi
 from PyPDF2 import PdfReader
 
-from langchain_community.embeddings import OllamaEmbeddings
+from together import Together
 from sentence_transformers import SentenceTransformer
 from langchain_core.embeddings import Embeddings
 from langchain_google_genai import ChatGoogleGenerativeAI
@@ -48,22 +48,32 @@ def get_youtube_id(url):
 
 
 
-class SentenceTransformerWrapper(Embeddings):
-    def __init__(self, model_name):
-        self.model = SentenceTransformer(model_name)
+
+class TogetherEmbeddingWrapper(Embeddings):
+
+    def __init__(self, api_key, model_api_string):
+        self.client = Together(api_key=api_key)
+        self.model_api_string = model_api_string
 
     def embed_documents(self, texts):
-        return self.model.encode(texts, convert_to_tensor=True).tolist()  # Convert to list for compatibility
+        outputs = self.client.embeddings.create(input=texts, model=self.model_api_string)
+        return [x.embedding for x in outputs.data]  # Return embeddings
 
     def embed_query(self, text):
-        return self.model.encode(text, convert_to_tensor=True).tolist()  # Convert to list for compatibility
+        outputs = self.client.embeddings.create(input=[text], model=self.model_api_string)
+        return [x.embedding for x in outputs.data][0]  # Return single embedding
 
-# Update the load_models function to use the wrapper
+
 @st.cache_resource
 def load_models():
-    embedding_model = SentenceTransformerWrapper("all-MiniLM-L6-v2")  # Use the wrapper here
-    llm = ChatGoogleGenerativeAI(model="gemini-pro", google_api_key=os.environ['GEMINI_API_KEY'])
-    return llm, embedding_model
+    api_key = os.environ['TOGETHER_API_KEY']  
+    model_api_string = "togethercomputer/m2-bert-80M-8k-retrieval"  
+    embedding_model = TogetherEmbeddingWrapper(api_key, model_api_string)
+
+    # Initialize Together client
+    client = Together(api_key=api_key)
+    return client, embedding_model  # Return client instead of llm
+
 
 
 
@@ -96,25 +106,16 @@ def download_trasncript(text):
     )
 
 
-def get_answer(vdb_contxt_text, query_text, llm):
-
-    template = f"""
-        Given the query '{{query_text}}', and after reviewing the information retrieved from the vector database:
-        {{vdb_contxt_text}}
-        Please provide a concise and informative answer that addresses the query effectively.
-    """
-
-    # Define the input variable names
-    input_variables = ["query_text", "vdb_contxt_text"]
-
-    # Create the prompt template
-    prompt = PromptTemplate(input_variables=input_variables, template=template)
-    output_parser = StrOutputParser()
-    chain = prompt | llm | output_parser
-
-    # Pass the actual values for the variables
-    response = chain.invoke({"query_text": query_text, "vdb_contxt_text": vdb_contxt_text})
-    return response
+def get_answer(vdb_contxt_text, query_text, client):
+    messages = [
+        {"role": "user", "content": f"Given the query '{query_text}', and after reviewing the information retrieved from the vector database: {vdb_contxt_text}, please provide a concise and informative answer."}
+    ]
+    
+    response = client.chat.completions.create(
+        model="meta-llama/Meta-Llama-3-70B-Instruct-Lite",
+        messages=messages,
+    )
+    return response.choices[0].message.content
 
 
 def process_load(pdf_data,youtube_id,llm,embedding_model):
@@ -136,10 +137,10 @@ def process_load(pdf_data,youtube_id,llm,embedding_model):
 
 
     context_data = yt_captions + pdf_text
-    text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=100)
+    text_splitter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=200)
     docs = [Document(page_content=x) for x in text_splitter.split_text(context_data)]
     
-    pinecone = PineconeVectorStore.from_documents(docs, embedding_model, index_name="docquest",pinecone_api_key=os.environ['PINECONE_API_KEY'])
+    pinecone = PineconeVectorStore.from_documents(docs, embedding_model, index_name="omnichat",pinecone_api_key=os.environ['PINECONE_API_KEY'])
     return pinecone
 
 
@@ -152,7 +153,7 @@ def chat_with_utube():
     col1, col2 = st.columns(spec=(2.5,1), gap="large")
     with col1:
         st.markdown(
-            "<h1 style='text-align: left; font-size: 48px;'>Chat With Docs</h1>",
+            "<h1 style='text-align: left; font-size: 48px;'>OmniChat 🤖</h1>",
             unsafe_allow_html=True,
         )
         st.markdown(
