@@ -1,7 +1,6 @@
 import cv2
 import mediapipe as mp
 import streamlit as st
-import tempfile
 import os
 import numpy as np
 import pandas as pd
@@ -184,10 +183,15 @@ def posture_analysis_page():
                 if analyze_video:
                     video_bytes = video.read()
 
-                    # Save uploaded video to a temporary file
-                    with tempfile.NamedTemporaryFile(delete=False) as temp_file:
-                        temp_file.write(video_bytes)
-                        temp_file_path = temp_file.name
+                    # Check if a file with the same name already exists
+                    if not os.path.exists(os.path.join('download_video', video.name)):
+                        # Save uploaded video to a directory named 'download_video'
+                        with open(os.path.join('download_video', video.name), 'wb') as temp_file:
+                            temp_file.write(video_bytes)
+                            temp_file_path = temp_file.name
+                    else:
+                        st.error("A file with the same name already exists. Please rename the file and try again.")
+                        return
 
                     with input_col:
                         with st.spinner("Processing video 🔎"):
@@ -205,8 +209,8 @@ def posture_analysis_page():
                         st.success("Video processed successfully 👏")
 
                     # Remove the temporary file after processing if temp_file_path is defined
-                    if temp_file_path:
-                        os.unlink(temp_file_path)
+                    # if temp_file_path:
+                    #     os.unlink(temp_file_path)
             else:
                 st.error("Upload the video and then press analyze button❗")
 
