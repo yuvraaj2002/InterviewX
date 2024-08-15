@@ -25,4 +25,3 @@ langchain-pinecone==0.1.1
 youtube-transcript-api==0.6.2
 together==1.2.7
 fpdf==1.7.2
--e .
