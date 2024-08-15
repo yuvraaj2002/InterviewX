@@ -8,14 +8,10 @@ from youtube_transcript_api import YouTubeTranscriptApi
 from PyPDF2 import PdfReader
 
 from together import Together
-from sentence_transformers import SentenceTransformer
 from langchain_core.embeddings import Embeddings
-from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.schema.document import Document
 from langchain_pinecone import PineconeVectorStore
-from langchain.schema.output_parser import StrOutputParser
-from langchain.prompts import PromptTemplate
 import numpy as np
 
 from dotenv import load_dotenv
