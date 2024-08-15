@@ -21,6 +21,8 @@ langchain-core==0.1.30
 langchain-experimental==0.0.53
 python-dotenv==1.0.1
 wordcloud==1.9.2
-langchain-pinecone
-
+langchain-pinecone==0.1.1
+youtube-transcript-api==0.6.2
+together==1.2.7
+fpdf==1.7.2
 -e .
