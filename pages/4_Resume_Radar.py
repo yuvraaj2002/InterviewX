@@ -18,12 +18,10 @@ from gensim.models import Word2Vec, KeyedVectors
 from scipy.spatial.distance import cosine
 from wordcloud import WordCloud
 import matplotlib.pyplot as plt
-from langchain.schema.output_parser import StrOutputParser
-from langchain.prompts import PromptTemplate
-from langchain_google_genai import ChatGoogleGenerativeAI
-from langchain_community.llms import Ollama
-from langchain_community.embeddings import OllamaEmbeddings
+from together import Together
+from langchain_core.embeddings import Embeddings
 from dotenv import load_dotenv
+from fpdf import FPDF
 load_dotenv()
 
 st.markdown(
@@ -49,31 +47,48 @@ punctuation = set(string.punctuation)
 stop_words = set(nltk.corpus.stopwords.words("english"))
 
 
+class TogetherEmbeddingWrapper(Embeddings):
+
+    def __init__(self, api_key, model_api_string):
+        self.client = Together(api_key=api_key)
+        self.model_api_string = model_api_string
+
+    def embed_documents(self, texts):
+        outputs = self.client.embeddings.create(input=texts, model=self.model_api_string)
+        return [x.embedding for x in outputs.data]  # Return embeddings
+
+    def embed_query(self, text):
+        outputs = self.client.embeddings.create(input=[text], model=self.model_api_string)
+        return [x.embedding for x in outputs.data][0]  # Return single embedding
+
+
 @st.cache_resource
 def load_models():
-    llm = ChatGoogleGenerativeAI(
-        model="gemini-pro", google_api_key=os.getenv("GEMINI_API_KEY")
-    )
+
+    api_key = os.environ['TOGETHER_API_KEY']
+    model_api_string = "togethercomputer/m2-bert-80M-8k-retrieval"
     embedding_model = KeyedVectors.load_word2vec_format(
         "artifacts/GoogleNews-vectors-negative300.bin.gz", binary=True, limit=500000
     )
-    return llm, embedding_model
+
+    # Initialize Together client
+    client = Together(api_key=api_key)
+    return client,embedding_model
 
 
-def get_questions(text,llm):
-
-    template = """
-            After reviewing the comprehensive details {resume_content} outlined in the candidate's resume, 
-            please provide seven tailored questions that the candidate can anticipate, focusing specifically 
-            on their projects and experience.Return me python list of questions which I could iterate.
-            """
-
-    prompt = PromptTemplate(input_variables=["resume_content"], template=template)
-    output_parser = StrOutputParser()
-    chain = prompt | llm | output_parser
-
-    response = chain.invoke({"resume_content": text})
-    return response
+def get_questions(text, client, resume_content):
+    messages = [
+        {"role": "user", "content": f"After reviewing the comprehensive details outlined in the candidate's resume, please provide 5 tailored questions that the candidate can anticipate specific to the resume only, focusing specifically on their projects and experience. Give result in the markdown format with quesetions as heading and questions explanation as normal paragraph text. Resume content: {resume_content}"},
+        {"role": "system", "content": "The questions should be specific to the resume content provided and should not be generic questions that can be applied to any resume."},
+    ]
+    
+    response = client.chat.completions.create(
+        model="meta-llama/Meta-Llama-3-70B-Instruct-Lite",
+        messages=messages,
+    )
+    
+    # Return the generated questions
+    return response.choices[0].message.content  
 
 
 
@@ -88,8 +103,6 @@ def clean_data(text):
     5. **Remove phone numbers and email addresses:** Removes phone numbers and email addresses from the text.
     6. **Lemmatization:** Lemmatizes words to their base form.
     7. **Rejoining:** Joins the remaining words back into a string with spaces in between.
-    
-
 
     Args:
         text (str): The text to be cleaned.
@@ -156,17 +169,24 @@ def vectorize_text(doc, embedding_model):
 
 def download_questions(questions_text):
     """
-    Creates a text file with the given summary text and offers download.
+    Creates a PDF file with the given summary text and offers download.
     """
     # Generate unique filename
-    filename = f"Interview_Questions_{int(time.time())}.txt"
+    filename = "Targeted_Questions.pdf"
 
     # Create the file and write the content
-    with open(filename, "w") as file:
-        file.write(questions_text)
+
+    pdf = FPDF()
+    pdf.add_page()
+    pdf.set_font("Arial", size = 15)
+    pdf.cell(200, 10, txt = "Targeted Interview Questions", ln = True, align = 'C')
+    pdf.ln(10)
+    pdf.set_font("Arial", size = 12)
+    pdf.multi_cell(0, 10, txt = questions_text, align = 'L')
+    pdf.output(filename)
 
     # Set content_type and headers
-    content_type = "text/plain"
+    content_type = "application/pdf"
     headers = {
         "Content-Disposition": f"attachment; filename={filename}",
         "Content-type": content_type,
@@ -175,7 +195,7 @@ def download_questions(questions_text):
     # Use st.download_button to offer download
     st.download_button(
         "Download questions💾",
-        data=questions_text,
+        data=open(filename, "rb"),
         file_name=filename,
         mime=content_type,
         use_container_width=True,
@@ -188,7 +208,7 @@ if 'clean_text_resume' not in st.session_state:
 
 
 def resume_radar_page():
-    llm, embedding_model = load_models()
+    llm,embedding_model = load_models()
     col1, col2 = st.columns(spec=(2, 1.3), gap="large")
     uploaded_file = None
     with col1:
@@ -242,9 +262,16 @@ def resume_radar_page():
     concent_button = st.button("Generate tailored Interview questions as per your resume", use_container_width=True)
     if concent_button:
         if st.session_state.clean_text_resume:
-            questions = get_questions(st.session_state.clean_text_resume,llm)
+            questions = get_questions(st.session_state.clean_text_resume,llm, st.session_state.clean_text_resume)
+            st.success("Questions generated successfully!")
+            st.markdown(
+                "<h1 style='text-align: left; font-size: 50px; '>Tailored Interview Questions📌</h1>",
+                unsafe_allow_html=True,
+            )
+            st.write(questions)
             download_questions(questions)
-            st.write("***")
+            st.write("")
+            st.write("")
         else:
             st.error("Please analyze your resume first.")
 
