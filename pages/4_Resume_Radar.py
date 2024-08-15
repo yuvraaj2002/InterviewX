@@ -66,7 +66,6 @@ class TogetherEmbeddingWrapper(Embeddings):
 def load_models():
 
     api_key = os.environ['TOGETHER_API_KEY']
-    model_api_string = "togethercomputer/m2-bert-80M-8k-retrieval"
     embedding_model = KeyedVectors.load_word2vec_format(
         "artifacts/GoogleNews-vectors-negative300.bin.gz", binary=True, limit=500000
     )
@@ -81,14 +80,14 @@ def get_questions(text, client, resume_content):
         {"role": "user", "content": f"After reviewing the comprehensive details outlined in the candidate's resume, please provide 5 tailored questions that the candidate can anticipate specific to the resume only, focusing specifically on their projects and experience. Give result in the markdown format with quesetions as heading and questions explanation as normal paragraph text. Resume content: {resume_content}"},
         {"role": "system", "content": "The questions should be specific to the resume content provided and should not be generic questions that can be applied to any resume."},
     ]
-    
+
     response = client.chat.completions.create(
         model="meta-llama/Meta-Llama-3-70B-Instruct-Lite",
         messages=messages,
     )
-    
+
     # Return the generated questions
-    return response.choices[0].message.content  
+    return response.choices[0].message.content
 
 
 
