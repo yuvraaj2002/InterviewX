@@ -7,8 +7,9 @@ import re
 from youtube_transcript_api import YouTubeTranscriptApi
 from PyPDF2 import PdfReader
 
-from langchain_community.llms import Ollama
 from langchain_community.embeddings import OllamaEmbeddings
+from sentence_transformers import SentenceTransformer
+from langchain_core.embeddings import Embeddings
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.schema.document import Document
@@ -46,13 +47,23 @@ def get_youtube_id(url):
     return match.group(6) if match else None
 
 
+
+class SentenceTransformerWrapper(Embeddings):
+    def __init__(self, model_name):
+        self.model = SentenceTransformer(model_name)
+
+    def embed_documents(self, texts):
+        return self.model.encode(texts, convert_to_tensor=True).tolist()  # Convert to list for compatibility
+
+    def embed_query(self, text):
+        return self.model.encode(text, convert_to_tensor=True).tolist()  # Convert to list for compatibility
+
+# Update the load_models function to use the wrapper
 @st.cache_resource
 def load_models():
-
-    embedding_model = OllamaEmbeddings(model="jina/jina-embeddings-v2-base-de")
+    embedding_model = SentenceTransformerWrapper("all-MiniLM-L6-v2")  # Use the wrapper here
     llm = ChatGoogleGenerativeAI(model="gemini-pro", google_api_key=os.environ['GEMINI_API_KEY'])
-    return llm,embedding_model
-
+    return llm, embedding_model
 
 
 
@@ -128,8 +139,8 @@ def process_load(pdf_data,youtube_id,llm,embedding_model):
     text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=100)
     docs = [Document(page_content=x) for x in text_splitter.split_text(context_data)]
     
-    # pinecone = PineconeVectorStore.from_documents(docs, embedding_model, index_name="docquest",pinecone_api_key=os.environ['PINECONE_API_KEY'])
-    return docs
+    pinecone = PineconeVectorStore.from_documents(docs, embedding_model, index_name="docquest",pinecone_api_key=os.environ['PINECONE_API_KEY'])
+    return pinecone
 
 
 def chat_with_utube():
@@ -186,23 +197,22 @@ def chat_with_utube():
     if pinecone_obj:
         response = None
         with col1:
-            st.write(pinecone_obj)
-            # message = st.chat_message("assistant")
-            # message.write("Video is Processed Succesfully, you can start with your query")
-            # query_text = st.text_input("Enter your query : ")
-            # if query_text:
-            #     result = pinecone_obj.similarity_search(query_text)[:1]
-            #     vdb_context_text = result[0].page_content
+            message = st.chat_message("assistant")
+            message.write("Video is Processed Succesfully, you can start with your query")
+            query_text = st.text_input("Enter your query : ")
+            if query_text:
+                result = pinecone_obj.similarity_search(query_text)[:1]
+                vdb_context_text = result[0].page_content
 
-            #     # Calling the function to get the answer from the LLM
-            #     response = get_answer(vdb_context_text,query_text,llm)
+                # Calling the function to get the answer from the LLM
+                response = get_answer(vdb_context_text,query_text,llm)
 
-            # if response is not None:
-            #     with st.container(border=True):
-            #         st.markdown(
-            #                 f"<p style='font-size: 20px;'>{response}</p>",
-            #             unsafe_allow_html=True
-            #         )
+            if response is not None:
+                with st.container(border=True):
+                    st.markdown(
+                            f"<p style='font-size: 20px;'>{response}</p>",
+                        unsafe_allow_html=True
+                    )
 
             
 
