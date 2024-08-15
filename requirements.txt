@@ -11,7 +11,7 @@ category_encoders==2.6.3
 transformers==4.38.2
 gensim==4.3.2
 beautifulsoup4==4.12.3
-opencv-python==4.10.0.84
+opencv-python-headless==4.10.0.84
 mediapipe==0.10.11
 plotly==5.19.0
 python-dotenv==1.0.1
