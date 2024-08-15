@@ -324,7 +324,7 @@ def feature_selection(df):
     techniques = ['RF_Importance', 'GB_Importance', 'Perm_importance', 'RFE_importance']
 
     # Create subplots: 1 row, 5 columns
-    fig = make_subplots(rows=1, cols=5, subplot_titles=techniques)
+    fig = make_subplots(rows=1, cols=4, subplot_titles=techniques)
 
     # Add bars to each subplot
     for i, technique in enumerate(techniques, start=1):
@@ -342,7 +342,7 @@ def feature_selection(df):
     )
 
     # Rotate x-axis labels for all subplots
-    for i in range(1, 5):
+    for i in range(1, 4):
         fig.update_xaxes(tickangle=-45, row=1, col=i)
 
     # Display the plot in Streamlit
