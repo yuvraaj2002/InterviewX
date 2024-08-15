@@ -12,7 +12,7 @@ st.markdown(
     """
         <style>
                .block-container {
-                    padding-top: 0.5rem;
+                    padding-top: 1rem;
                     padding-bottom: 0rem;
                     # padding-left: 2rem;
                     # padding-right:2rem;
@@ -70,6 +70,7 @@ def back_encoding(df):
 
 
 def univariate_analysis(df):
+
     st.markdown(
         "<h2 style='text-align: left; font-size: 40px; '>Introductory Analysis</h1>",
         unsafe_allow_html=True,
