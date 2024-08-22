@@ -203,7 +203,14 @@ def text_summarization_page():
                     )
                 index = index + 1
 
-            download_summary(summary)
+            if st.button("Download the summary",use_container_width=True):
+                download_summary(summary)
+
+
+    st.write("***")
+    if bool_summarized_content:
+        st.markdown("<h3>Pipeline Walkthrough</h3>", unsafe_allow_html=True)
+        st.image("artifacts\Pipeline_walkthrough.png")
 
 
 text_summarization_page()
