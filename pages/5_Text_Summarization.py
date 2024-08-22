@@ -1,8 +1,15 @@
 import streamlit as st
-from transformers import pipeline
 from bs4 import BeautifulSoup
 import requests
 import time
+import os
+from langchain.embeddings import HuggingFaceInferenceAPIEmbeddings
+from langchain import PromptTemplate
+from langchain_experimental.text_splitter import SemanticChunker
+from langchain.chains.summarize import load_summarize_chain
+from langchain_groq import ChatGroq
+from dotenv import load_dotenv
+load_dotenv()
 
 st.markdown(
     """
@@ -17,19 +24,42 @@ st.markdown(
         """,
     unsafe_allow_html=True,
 )
+os.environ["GROQ_API_KEY"] = os.getenv('groq_api_key')
 
 
 @st.cache_resource
-def summarizing_pipeline():
+def laoding_models():
+    
+    # Loading the LLM model
+    model = ChatGroq(model="llama3-8b-8192")
 
-    # Instantiating the summarization pipeline using t5-base model
-    summarizer = pipeline(
-        "summarization",
-        model="t5-base",
-        tokenizer="t5-base",
-        framework="pt",
-    )
-    return summarizer
+    # Embedding Model
+    embedding_model = HuggingFaceInferenceAPIEmbeddings(api_key=os.getenv('HF_TOKEN'), model_name="BAAI/bge-base-en-v1.5")
+
+    # Defining the semantic chunker
+    text_splitter_semantic = SemanticChunker(
+    embedding_model, breakpoint_threshold_type="percentile")
+
+    return model,text_splitter_semantic
+
+
+@st.cache_resource
+def get_summary_chain(_model):
+
+    combine_prompt = """
+    Write a concise summary of the following text delimited by triple backquotes.
+    Return your response containing exactly 3 bullet points that cover the key points of the text.
+    ```{text}```
+    BULLET POINT SUMMARY:
+    """
+    combine_prompt_template = PromptTemplate(template=combine_prompt, input_variables=["text"])
+
+    summary_chain = load_summarize_chain(llm=_model,
+                                        chain_type='map_reduce',
+                                        combine_prompt=combine_prompt_template)
+    
+    return summary_chain
+
 
 
 def download_summary(summary_text):
@@ -90,60 +120,23 @@ def extract_process(URL):
         return f"An error occurred: {e}"
 
 
-def chunk_creation(article, max_chunk=512):
-    """
-    Chunks an article into sentences, respecting sentence boundaries and a maximum chunk size.
-
-    Args:
-        article: The text of the article to be chunked.
-        max_chunk: The maximum number of tokens allowed in a chunk.
-
-    Returns:
-        A list of chunks, each represented as a string.
-    """
-    article = article.replace(".", ".<eos>")
-    article = article.replace("?", "?<eos>")
-    article = article.replace("!", "!<eos>")
-
-    # Split the article into sentences based on the '<eos>' marker.
-    sentences = article.split("<eos>")
-
-    # Initialize variables for chunk creation.
-    current_chunk = 0
-    chunks = []
-
-    for sentence in sentences:
-        if len(chunks) == current_chunk + 1:
-            if (
-                len(chunks[current_chunk].split(" ")) + len(sentence.split(" "))
-                <= max_chunk
-            ):
-                chunks[current_chunk] += " " + sentence
-            else:
-                current_chunk += 1
-                chunks.append(sentence)
-        else:
-            chunks.append(sentence)
-
-    for chunk_id in range(len(chunks)):
-        chunks[chunk_id] = chunks[chunk_id].strip()
-
-    return chunks
-
-
 def text_summarization_page():
     st.markdown(
-        "<h1 style='text-align: center; font-size: 50px;'>Condense and Conquer📌</h1>",
+        "<h1 style='text-align: left; font-size: 50px;'>Condense and Conquer📌</h1>",
         unsafe_allow_html=True,
     )
 
-    Analytics_intro = "<p style='font-size: 22px; text-align: center;'>This module is designed to streamline information retrieval during placement preparations or general inquiries by providing concise summaries of specific topics. Users can provide the URL of a website containing the relevant blog post, and the module will automatically scrape the content and generate a summary. This eliminates the need to review extensive content, saving time and effort. However, please note that content behind paywalls cannot be processed due to access restrictions. In such cases, users may need to provide an alternative source or a different post. </p>"
+    Analytics_intro = "<p style='font-size: 22px; text-align: left;'>This module is designed to streamline information retrieval during placement preparations or general inquiries by providing concise summaries of specific topics. Users can provide the URL of a website containing the relevant blog post, and the module will automatically scrape the content and generate a summary. This eliminates the need to review extensive content, saving time and effort. However, please note that content behind paywalls cannot be processed due to access restrictions. In such cases, users may need to provide an alternative source or a different post. </p>"
     st.markdown(Analytics_intro, unsafe_allow_html=True)
-    summarizer = summarizing_pipeline()
     st.markdown("***")
 
-    summary = ""
+
+    summarized_text = ""
     original_text = ""
+    llm_model,text_splitter_semantic = laoding_models()
+    summary_chain = get_summary_chain(llm_model)
+
+
     col1, col2 = st.columns([2, 1], gap="large")
     with col1:
         url = st.text_input("Enter the blog post URL")
@@ -157,19 +150,17 @@ def text_summarization_page():
                 try:
                     ARTICLE = extract_process(url)
                     original_text = ARTICLE
-                    CHUNKS = chunk_creation(ARTICLE)
-                    results = summarizer(
-                        CHUNKS, max_length=150, min_length=50, do_sample=False
-                    )
-                    summarized_text = " ".join(
-                        [summ["summary_text"] for summ in results]
-                    )
+                    docs = text_splitter_semantic.create_documents([original_text])
+                    summary = summary_chain.run(docs)
+                    summarized_text = summary
+                  
                     bool_summarized_content = True
-                    summary = summarized_text
                     st.markdown("<h3>Summarized content️️</h3>", unsafe_allow_html=True)
-                    markdown_text = f"<p style='font-size: 20px;'>{summarized_text}</p>"
-                    st.markdown(markdown_text, unsafe_allow_html=True)
+                    st.markdown(f"<p style='font-size: 20px;'>{summarized_text}</p>", unsafe_allow_html=True)
+                    
+                    
                     st.write("")
+
                 except Exception as e:
                     st.error(
                         f"Error summarizing the content due to wrong url or paywall: {e}"
@@ -190,8 +181,8 @@ def text_summarization_page():
 
         wordcnt_col1, wordcnt_col2 = st.columns(2, gap="large")
         if bool_summarized_content:
-            original_wc = len(original_text.split())
-            summary_wc = len(summary.split())
+            original_wc = llm_model.get_num_tokens(original_text)
+            summary_wc = llm_model.get_num_tokens(summarized_text)
 
             row = st.columns(2)
             index = 0
@@ -199,13 +190,13 @@ def text_summarization_page():
                 tile = col.container(height=150)  # Adjust the height as needed
                 if index == 0:
                     tile.metric(
-                        label="Original Word Count",
+                        label="Original Token Count",
                         value=original_wc,
                         delta="Complete content : 100%",
                     )
                 else:
                     tile.metric(
-                        label="Summary Word Count",
+                        label="Summary Token Count",
                         value=summary_wc,
                         delta="Condense % : "
                         + str(int(((original_wc - summary_wc) / original_wc) * 100)),
