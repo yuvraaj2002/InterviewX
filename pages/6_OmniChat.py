@@ -7,9 +7,10 @@ import re
 from youtube_transcript_api import YouTubeTranscriptApi
 from PyPDF2 import PdfReader
 
-from together import Together
-from langchain_core.embeddings import Embeddings
+from langchain_groq import ChatGroq
+from langchain.embeddings import HuggingFaceInferenceAPIEmbeddings
 from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain_experimental.text_splitter import SemanticChunker
 from langchain.schema.document import Document
 from langchain_pinecone import PineconeVectorStore
 import numpy as np
@@ -45,30 +46,19 @@ def get_youtube_id(url):
 
 
 
-class TogetherEmbeddingWrapper(Embeddings):
-
-    def __init__(self, api_key, model_api_string):
-        self.client = Together(api_key=api_key)
-        self.model_api_string = model_api_string
-
-    def embed_documents(self, texts):
-        outputs = self.client.embeddings.create(input=texts, model=self.model_api_string)
-        return [x.embedding for x in outputs.data]  # Return embeddings
-
-    def embed_query(self, text):
-        outputs = self.client.embeddings.create(input=[text], model=self.model_api_string)
-        return [x.embedding for x in outputs.data][0]  # Return single embedding
-
 
 @st.cache_resource
-def load_models():
-    api_key = os.environ['TOGETHER_API_KEY']  
-    model_api_string = "togethercomputer/m2-bert-80M-8k-retrieval"  
-    embedding_model = TogetherEmbeddingWrapper(api_key, model_api_string)
+def load_all_models():
 
-    # Initialize Together client
-    client = Together(api_key=api_key)
-    return client, embedding_model  # Return client instead of llm
+    # Loading the LLM model
+    model = ChatGroq(model="llama3-8b-8192", api_key=os.getenv('GROQ_API_KEY'))
+
+    # Embedding Model
+    embedding_model = HuggingFaceInferenceAPIEmbeddings(api_key=os.getenv('HF_TOKEN'), model_name="BAAI/bge-base-en-v1.5")
+
+    text_splitter_recursive = RecursiveCharacterTextSplitter(chunk_size=4000, chunk_overlap=200)
+
+    return model,embedding_model,text_splitter_recursive
 
 
 
@@ -102,19 +92,39 @@ def download_trasncript(text):
     )
 
 
-def get_answer(vdb_contxt_text, query_text, client):
-    messages = [
-        {"role": "user", "content": f"Given the query '{query_text}', and after reviewing the information retrieved from the vector database: {vdb_contxt_text}, please provide a concise and informative answer."}
-    ]
-    
-    response = client.chat.completions.create(
-        model="meta-llama/Meta-Llama-3-70B-Instruct-Lite",
-        messages=messages,
-    )
-    return response.choices[0].message.content
+def process_pdf(pdf_file, embedding_model, text_splitter):
+    """
+    Processes a PDF file by extracting its text content and splitting it into documents.
+
+    This function reads the PDF file, extracts the text from all its pages, and then uses a text splitter to divide the text into documents. The documents are then returned.
+
+    Parameters:
+    - pdf_file: The PDF file to be processed.
+    - embedding_model: The embedding model to be used for document creation.
+    - text_splitter: The text splitter to be used for dividing the text into documents.
+
+    Returns:
+    - A list of documents created from the PDF file's text content.
+    """
+    # Create a BytesIO object
+    file_object = io.BytesIO(pdf_file.read())  
+    reader = PdfReader(file_object)
+
+    # Extract text from all pages
+    pdf_text = ""
+    for page in reader.pages:
+        pdf_text += page.extract_text()
+
+    docs = text_splitter.create_documents(pdf_text)
+    return docs
 
 
-def process_load(pdf_data,youtube_id,llm,embedding_model):
+
+def process_website(website_url,embedding_model,text_splitter):
+    pass
+
+
+def process_youtube(youtube_id,embedding_model,text_splitter):
 
     result = YouTubeTranscriptApi.get_transcript(youtube_id)
     yt_captions = ""
@@ -133,17 +143,18 @@ def process_load(pdf_data,youtube_id,llm,embedding_model):
 
 
     context_data = yt_captions + pdf_text
-    text_splitter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=200)
-    docs = [Document(page_content=x) for x in text_splitter.split_text(context_data)]
-    
+
+    # Creating the chunks
+    docs = text_splitter.create_documents([context_data])
+   
     pinecone = PineconeVectorStore.from_documents(docs, embedding_model, index_name="omnichat",pinecone_api_key=os.environ['PINECONE_API_KEY'])
     return pinecone
-
+    
 
 def chat_with_utube():
 
     # Calling the function to load the Whisper model, LLM and embedding model
-    llm,embedding_model = load_models()
+    llm,embedding_model,text_splitter_semantic,text_splitter_recursive = load_all_models()
     pinecone_obj = None
 
     col1, col2 = st.columns(spec=(2.5,1), gap="large")
@@ -156,17 +167,33 @@ def chat_with_utube():
             "<p style='font-size: 20px; text-align: left;'>Welcome to our advanced Media Query Module, a versatile tool for interacting with both YouTube videos and PDF documents. Upload any YouTube video URL or PDF file, and our AI will generate searchable transcripts and text extractions. These are stored in our vector database, linked to a Large Language Model (LLM), enabling detailed content queries. Retrieve insights effortlessly with our cutting-edge AI technology.</p>",
             unsafe_allow_html=True,
         )
+        st.write("***")
 
-        # Getting the Youtube URL as input from the user
+        # Getting the input type from the user
+        pdf_file = None
+        youtube_link = None
+        website_link = None
         with st.container(border=True):
-            pdf_file = st.file_uploader("Upload a PDF file", type=["pdf"])
-            youtube_link = st.text_input("Enter the Youtube video URL")
+            input_type = st.selectbox("Select the input type", ["Website/Blog", "Youtube", "PDF"])
+            if input_type == "PDF":
+                pdf_file = st.file_uploader("Upload a PDF file", type=["pdf"])
+                process_pdf(pdf_file,embedding_model)
+
+            elif input_type == "Youtube":
+                youtube_link = st.text_input("Enter the Youtube video URL")
+                youtube_id = get_youtube_id(youtube_link)
+                process_youtube(youtube_id,)
+
+
+            elif input_type == "Website/Blog":
+                website_link = st.text_input("Enter the Website/Blog URL")
 
     
     with col2:
         if youtube_link and pdf_file:
             video_id = get_youtube_id(youtube_link)
             if video_id:
+                st.write("")
                 st.write("")
                 with st.container(border=True):
                     st.markdown(f"""
@@ -178,11 +205,11 @@ def chat_with_utube():
                     st.write("")
                     pdf_data = pdf_file.read()
                     b64_pdf = base64.b64encode(pdf_data).decode("utf-8")
-                    pdf_display = f'<embed src="data:application/pdf;base64,{b64_pdf}" width="430" height="500" type="application/pdf">'
+                    pdf_display = f'<embed src="data:application/pdf;base64,{b64_pdf}" width="430" height="550" type="application/pdf">'
                     st.markdown(pdf_display, unsafe_allow_html=True)
 
                     # Calling the function to process both PDF and Youtube and store them in Vector DB
-                    pinecone_obj = process_load(pdf_data,video_id,llm,embedding_model)
+                    pinecone_obj = process_load(pdf_data,video_id,embedding_model,text_splitter_recursive)
             else:
                 st.error("Invalid YouTube URL")
         else:
@@ -202,12 +229,12 @@ def chat_with_utube():
                 vdb_context_text = result[0].page_content
 
                 # Calling the function to get the answer from the LLM
-                response = get_answer(vdb_context_text,query_text,llm)
+                response = llm.invoke(f"Given the query '{query_text}', and after reviewing the information retrieved from the vector database: {vdb_context_text}, please provide a concise and informative answer.")
 
             if response is not None:
                 with st.container(border=True):
                     st.markdown(
-                            f"<p style='font-size: 20px;'>{response}</p>",
+                            f"<p style='font-size: 20px;'>{response.content}</p>",
                         unsafe_allow_html=True
                     )
 
